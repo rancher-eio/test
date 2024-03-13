@@ -19,7 +19,7 @@ jobs:
         method: jwt
         url: ${{ vars.VAULT_ADDR }}
         path: ${{ github.repository_owner }}
-        role: ${{ github.repository }}
+        role: ${{ github.event.repository.name }}
         secrets: |
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
     - name: Write Secrets to STDOUT
