@@ -20,6 +20,7 @@ jobs:
         method: jwt
         path: jwt-github
         role: github-poc
+        jwtGithubAudience: "https://github.com/rancher-eio"
         secrets: |
           secret/proof-of-concept/github/repo/data proofOfConcept | PROOF_OF_CONCEPT
     - name: Write Secrets to STDOUT
