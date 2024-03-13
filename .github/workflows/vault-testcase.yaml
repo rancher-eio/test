@@ -21,7 +21,7 @@ jobs:
         path: jwt-github
         role: github-poc
         secrets: |
-          secret/proof-of-concept/github/repo/data proofOfConcept | PROOF_OF_CONCEPT
+          secret/proof-of-concept/github/repo proofOfConcept | PROOF_OF_CONCEPT
     - name: Write Secrets to STDOUT
       run: |
         echo BEGIN
