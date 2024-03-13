@@ -18,7 +18,7 @@ jobs:
       with:
         method: jwt
         url: ${{ vars.VAULT_ADDR }}
-        path: ${{ env.GITHUB_REPOSITORY_OWNER }}
+        path: ${{ github.repository_owner }}
         role: ${{ env.GITHUB_REPOSITORY }}
         secrets: |
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
