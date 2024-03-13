@@ -17,8 +17,9 @@ jobs:
       id: secrets
       with:
         url: https://vault.rancher.kitchen
+        method: jwt
+        path: jwt-github
         role: github--rancher-eio--test
-        method: jwt-github
         secrets: |
           secret/proof-of-concept/github/repo proofOfConcept | PROOF_OF_CONCEPT
     - name: Write Secrets to STDOUT
