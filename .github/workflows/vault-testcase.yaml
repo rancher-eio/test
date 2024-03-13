@@ -16,12 +16,12 @@ jobs:
       uses: hashicorp/vault-action@v3.0.0    
       id: secrets
       with:
-        url: ${{ vars.VAULT_ADDR }}
         method: jwt
-        path: jwt-github
-        role: github-poc
+        url: ${{ vars.VAULT_ADDR }}
+        path: ${{ env.GITHUB_REPOSITORY_OWNER }}
+        role: ${{ env.GITHUB_REPOSITORY }}
         secrets: |
-          secret/data/proof-of-concept/github/repo proofOfConcept | PROOF_OF_CONCEPT
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
     - name: Write Secrets to STDOUT
       run: |
         echo BEGIN
