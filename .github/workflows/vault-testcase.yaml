@@ -12,7 +12,7 @@ jobs:
     name: Vault Test
     runs-on: ubuntu-22.04
     steps:
-    - name: Read Secrets from Vault
+    - name: "Read Secrets from Vault"
       uses: hashicorp/vault-action@v3.0.0    
       id: secrets
       with:
