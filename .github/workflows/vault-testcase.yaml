@@ -5,11 +5,10 @@ on:
     branches:
     - "**"
 jobs:
-  read-repo-secret:
+  test:
     permissions:
       contents: read
       id-token: write
-    name: Vault Test
     runs-on: ubuntu-22.04
     steps:
     - name: "Read Secrets from Vault"
