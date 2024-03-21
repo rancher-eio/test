@@ -40,7 +40,7 @@ jobs:
       with:
         address: ${{ vars.VAULT_ADDR }}
         secrets: |
-          secret/data/github-actions/test
+          secret/data/github-actions/test status
     - name: "Use those Secrets"
       run: |
         echo "${{ steps.vault.output.secrets.status }}" > status
