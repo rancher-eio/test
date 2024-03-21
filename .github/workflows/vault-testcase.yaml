@@ -43,5 +43,5 @@ jobs:
           secret/data/github-actions/test status
     - name: "Use those Secrets"
       run: |
-        echo "${{ steps.vault.output.secrets.status }}" > status
+        echo "${{ steps.vault.output.status }}" > status
         cat status
