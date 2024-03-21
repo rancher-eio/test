@@ -38,6 +38,7 @@ jobs:
       uses: rancher-eio/read-vault-secrets@main
       id: vault
       with:
+        address: ${{ vars.VAULT_ADDR }}
         secrets: |
           secret/data/github-actions/test
     - name: "Use those Secrets"
