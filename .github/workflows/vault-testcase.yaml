@@ -34,11 +34,13 @@ jobs:
     name: Action Test
     runs-on: ubuntu-22.04
     steps:
-    - uses: rancher-eio/read-vault-secrets@main
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
       id: vault
       with:
         address: ${{ vars.VAULT_ADDR }}
         secrets: |
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - run: |
+    - name: "Use those Secrets"
+      run: |
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
