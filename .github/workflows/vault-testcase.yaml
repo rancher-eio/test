@@ -31,7 +31,6 @@ jobs:
     permissions:
       contents: read
       id-token: write # this is important, it's how we authenticate with Vault
-    name: Action Test
     runs-on: ubuntu-22.04
     steps:
     - name: "Read some Secrets"
