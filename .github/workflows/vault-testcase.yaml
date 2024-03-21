@@ -43,4 +43,4 @@ jobs:
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
     - name: "Use those Secrets"
       run: |
-        test "${{ steps.vault.output.secrets.PROOF_OF_CONCEPT }}" = "success"
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
