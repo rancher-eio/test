@@ -27,3 +27,20 @@ jobs:
         echo BEGIN
         echo 'secret is: ${{ steps.secrets.outputs.PROOF_OF_CONCEPT }}'
         echo END
+  action-test:
+    permissions:
+      contents: read
+      id-token: write # this is important, it's how we authenticate with Vault
+    name: Action Test
+    runs-on: ubuntu-22.04
+    steps:
+    - name: "Read Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      id: vault
+      with:
+        secrets: |
+          secret/data/github-actions/test
+    - name: "Use those Secrets"
+      run: |
+        echo "${{ steps.vault.output.secrets.status }}" > status
+        cat status
