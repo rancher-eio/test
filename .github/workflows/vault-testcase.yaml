@@ -23,7 +23,7 @@ jobs:
     permissions:
       contents: read
       id-token: write # this is important, it's how we authenticate with Vault
-    runs-on: [org--rancher-eio--arm64-containers]
+    runs-on: [repo--rancher-eio--test--amd64-containers]
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
