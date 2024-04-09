@@ -5,27 +5,6 @@ on:
     branches:
     - "**"
 jobs:
-  test:
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-22.04
-    steps:
-    - name: "Read Secrets from Vault"
-      uses: hashicorp/vault-action@v3.0.0    
-      id: secrets
-      with:
-        method: jwt
-        url: ${{ vars.VAULT_ADDR }}
-        path: ${{ github.repository_owner }}
-        role: ${{ github.event.repository.name }}
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: Write Secrets to STDOUT
-      run: |
-        echo BEGIN
-        echo 'secret is: ${{ steps.secrets.outputs.PROOF_OF_CONCEPT }}'
-        echo END
   action-test:
     permissions:
       contents: read
@@ -35,7 +14,6 @@ jobs:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
       with:
-        address: ${{ vars.VAULT_ADDR }}
         secrets: |
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
     - name: "Use those Secrets"
@@ -45,12 +23,11 @@ jobs:
     permissions:
       contents: read
       id-token: write # this is important, it's how we authenticate with Vault
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted, org--rancher-eio--arm64-containers]
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
       with:
-        address: ${{ vars.VAULT_ADDR }}
         secrets: |
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
     - name: "Use those Secrets"
