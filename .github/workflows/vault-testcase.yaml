@@ -41,3 +41,18 @@ jobs:
     - name: "Use those Secrets"
       run: |
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+  runner-test:
+    permissions:
+      contents: read
+      id-token: write # this is important, it's how we authenticate with Vault
+    runs-on: [self-hosted, linux]
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        address: ${{ vars.VAULT_ADDR }}
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
