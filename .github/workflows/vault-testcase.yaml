@@ -20,6 +20,7 @@ jobs:
       run: |
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
   runner-test:
+    container: ubuntu:22.04
     permissions:
       contents: read
       id-token: write # this is important, it's how we authenticate with Vault
