@@ -8,7 +8,7 @@ jobs:
   github-hosted:
     permissions:
       contents: read
-      id-token: write # this is important, it's how we authenticate with Vault
+      id-token: write
     runs-on: ubuntu-22.04
     steps:
     - name: "Read some Secrets"
@@ -23,7 +23,7 @@ jobs:
     container: ubuntu:22.04
     permissions:
       contents: read
-      id-token: write # this is important, it's how we authenticate with Vault
+      id-token: write
     runs-on: [org--rancher-eio--amd64-containers]
     steps:
     - name: "Read some Secrets"
@@ -38,7 +38,7 @@ jobs:
     container: ubuntu:22.04
     permissions:
       contents: read
-      id-token: write # this is important, it's how we authenticate with Vault
+      id-token: write
     runs-on: [org--rancher-eio--arm64-containers]
     steps:
     - name: "Read some Secrets"
@@ -53,7 +53,7 @@ jobs:
     container: ubuntu:22.04
     permissions:
       contents: read
-      id-token: write # this is important, it's how we authenticate with Vault
+      id-token: write
     runs-on: [repo--rancher-eio--test--amd64-containers]
     steps:
     - name: "Read some Secrets"
@@ -68,7 +68,7 @@ jobs:
     container: ubuntu:22.04
     permissions:
       contents: read
-      id-token: write # this is important, it's how we authenticate with Vault
+      id-token: write
     runs-on: [repo--rancher-eio--test--arm64-containers]
     steps:
     - name: "Read some Secrets"
