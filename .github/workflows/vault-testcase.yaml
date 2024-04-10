@@ -5,7 +5,7 @@ on:
     branches:
     - "**"
 jobs:
-  on-github-hosted-runners:
+  github-hosted:
     permissions:
       contents: read
       id-token: write # this is important, it's how we authenticate with Vault
@@ -19,7 +19,37 @@ jobs:
     - name: "Use those Secrets"
       run: |
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  on-self-hosted-repo-runners-amd64:
+  self-hosted-org-amd64:
+    container: ubuntu:22.04
+    permissions:
+      contents: read
+      id-token: write # this is important, it's how we authenticate with Vault
+    runs-on: [org--rancher-eio--amd64-containers]
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+  self-hosted-org-arm64:
+    container: ubuntu:22.04
+    permissions:
+      contents: read
+      id-token: write # this is important, it's how we authenticate with Vault
+    runs-on: [org--rancher-eio--arm64-containers]
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+  self-hosted-repo-amd64:
     container: ubuntu:22.04
     permissions:
       contents: read
@@ -34,7 +64,7 @@ jobs:
     - name: "Use those Secrets"
       run: |
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  on-self-hosted-repo-runners-arm64:
+  self-hosted-repo-arm64:
     container: ubuntu:22.04
     permissions:
       contents: read
