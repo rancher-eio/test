@@ -5,7 +5,7 @@ on:
     branches:
     - "**"
 jobs:
-  action-test:
+  on-github-hosted-runners:
     permissions:
       contents: read
       id-token: write # this is important, it's how we authenticate with Vault
@@ -19,12 +19,27 @@ jobs:
     - name: "Use those Secrets"
       run: |
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  runner-test:
+  on-self-hosted-repo-runners-amd64:
     container: ubuntu:22.04
     permissions:
       contents: read
       id-token: write # this is important, it's how we authenticate with Vault
     runs-on: [repo--rancher-eio--test--amd64-containers]
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+  on-self-hosted-repo-runners-arm64:
+    container: ubuntu:22.04
+    permissions:
+      contents: read
+      id-token: write # this is important, it's how we authenticate with Vault
+    runs-on: [repo--rancher-eio--test--arm64-containers]
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
