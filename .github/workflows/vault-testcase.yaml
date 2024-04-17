@@ -3,7 +3,7 @@ name: Vault Testcase
 on:
   push:
     branches:
-    - "**"
+    - vault
 jobs:
   github-hosted:
     permissions:
