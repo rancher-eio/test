@@ -3,6 +3,7 @@ name: Vault Testcase
 on:
   push:
     branches:
+    - main
     - vault
 jobs:
   github-hosted:
@@ -79,3 +80,34 @@ jobs:
     - name: "Use those Secrets"
       run: |
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+  self-hosted-runs-on-arm64:
+    container: ubuntu:22.04
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: runs-on,runner=2cpu-linux-arm64,run-id=${{ github.run_id }}
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+  self-hosted-runs-on-amd64:
+    container: ubuntu:22.04
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: runs-on,runner=2cpu-linux-x64,run-id=${{ github.run_id }}
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+
