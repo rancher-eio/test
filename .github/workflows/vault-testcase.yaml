@@ -55,7 +55,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: [repo--rancher-eio--test--amd64-containers]
+    runs-on: [repo--${{ github.repository_id }}--amd64]
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
@@ -70,7 +70,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: [repo--rancher-eio--test--arm64-containers]
+    runs-on: [repo--${{ github.repository_id }}--arm64]
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
