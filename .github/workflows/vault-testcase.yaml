@@ -25,7 +25,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: [org--rancher-eio--amd64-containers]
+    runs-on: org-${{ github.repository_owner_id }}-amd64-k8s
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
@@ -40,7 +40,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: [org--rancher-eio--arm64-containers]
+    runs-on: org-${{ github.repository_owner_id }}-arm64-k8s
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
@@ -55,7 +55,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: repo--${{ github.repository_id }}--amd64
+    runs-on: repo-${{ github.repository_id }}-amd64-k8s
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
@@ -70,7 +70,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: repo--${{ github.repository_id }}--arm64
+    runs-on: repo-${{ github.repository_id }}-arm64-k8s
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
