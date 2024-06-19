@@ -2,8 +2,12 @@ name: Vault
 on:
   workflow_call:
     inputs:
+      container:
+        default: ubuntu:22.04
+        required: false
+        type: string
       runs-on:
-        default: ubuntu-latest
+        default: ubuntu-22.04
         required: false
         type: string
       from-secret:
@@ -51,6 +55,7 @@ jobs:
       contents: read
       id-token: write
     runs-on: ${{ inputs.runs-on }}
+    container: ${{ inputs.container }}
     steps:
     - id: fetch
       uses: rancher-eio/read-vault-secrets@main
