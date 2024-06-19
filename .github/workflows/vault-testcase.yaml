@@ -7,18 +7,7 @@ on:
     - vault
 jobs:
   changes:
-    runs-on: ubuntu-22.04
-    outputs:
-      vault: ${{ steps.filter.outputs.vault }}
-    steps:
-    - uses: actions/checkout@v4
-    - uses: dorny/paths-filter@v3
-      id: filter
-      with:
-        filters: |
-          vault:
-          - ".github/workflows/vault-testcase.yaml"
-
+    uses: ./.github/workflows/changes
   github-hosted:
     needs: changes
     if: ${{ needs.changes.outputs.vault == 'true' }}
