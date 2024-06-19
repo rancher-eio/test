@@ -59,4 +59,4 @@ jobs:
           ${{ inputs.from-secret }} ${{ inputs.read-key }} | ${{ inputs.export-as }}
     - id: validate
       run: |
-        test "${{ env[inputs.export-as] }}" = "success"
+        test "${{ env[inputs.export-as] }}" = "${{ inputs.expected-value }}"
