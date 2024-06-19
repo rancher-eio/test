@@ -1,0 +1,22 @@
+on:
+  workflow_call:
+    inputs: &inputs
+      runs-on:
+        default: ubuntu-latest
+        required: false
+        type: string    
+jobs:
+  test:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+    - id: fetch
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - id: validate
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
