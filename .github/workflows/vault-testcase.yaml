@@ -9,6 +9,7 @@ jobs:
   changes:
     runs-on: ubuntu-22.04
     outputs:
+      filter: ${{ steps.filter.outputs }}
       vault: ${{ steps.filter.outputs.vault }}
     steps:
     - uses: actions/checkout@v4
@@ -21,7 +22,7 @@ jobs:
 
   github-hosted:
     needs: changes
-    if: ${{ needs.changes.outputs.vault == 'true' }}
+    if: ${{ needs.changes.outputs.filter.vault == 'true' }}
     permissions:
       contents: read
       id-token: write
