@@ -1,6 +1,6 @@
 name: Vault
 on:
-  workflow_call: &workflow_call
+  workflow_call:
     inputs:
       runs-on:
         default: ubuntu-latest
@@ -22,7 +22,29 @@ on:
         type: string
         default: success
         required: false
-  workflow_dispatch: *workflow_call
+  workflow_dispatch:
+    inputs:
+      runs-on:
+        default: ubuntu-latest
+        required: false
+        type: string
+      from-secret:
+        type: string
+        default: secret/data/github-actions/test
+        required: false
+      read-key: 
+        type: string
+        default: status
+        required: false
+      export-as:
+        type: string
+        default: PROOF_OF_CONCEPT
+        required: false
+      expected-value:
+        type: string
+        default: success
+        required: false
+
 jobs:
   test:
     permissions:
