@@ -1,17 +1,28 @@
 name: Vault
 on:
-  workflow_call:
+  workflow_call: &workflow_call
     inputs:
       runs-on:
         default: ubuntu-latest
         required: false
         type: string
-  workflow_dispatch:
-    inputs:
-      runs-on:
-        default: ubuntu-latest
-        required: false
+      from-secret:
         type: string
+        default: secret/data/github-actions/test
+        required: false
+      read-key: 
+        type: string
+        default: status
+        required: false
+      export-as:
+        type: string
+        default: PROOF_OF_CONCEPT
+        required: false
+      expected-value:
+        type: string
+        default: success
+        required: false
+  workflow_dispatch: *workflow_call
 jobs:
   test:
     permissions:
@@ -23,7 +34,7 @@ jobs:
       uses: rancher-eio/read-vault-secrets@main
       with:
         secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+          ${{ inputs.from-secret }} ${{ inputs.read-key }} | ${{ inputs.export-as }}
     - id: validate
       run: |
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
