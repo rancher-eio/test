@@ -19,7 +19,7 @@ jobs:
     with:
       runs-on: ubuntu-22.04
 
-  self-hosted-org-containers:
+  self-hosted-containers:
     needs: changes
     if: ${{ needs.changes.outputs.vault == 'true' }}
     container: ubuntu:22.04
@@ -31,30 +31,12 @@ jobs:
         architecture:
         - amd64
         - arm64
-    runs-on: ["org-${{ github.repository_owner_id }}-${{ matrix.architecture }}-k8s"]
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-
-  self-hosted-repo-containers:
-    needs: changes
-    if: ${{ needs.changes.outputs.vault == 'true' }}
-    container: ubuntu:22.04
-    permissions:
-      contents: read
-      id-token: write
-    strategy:
-      matrix:
-        architecture:
-        - amd64
-        - arm64
-    runs-on: ["repo-${{ github.repository_id }}-${{ matrix.architecture }}-k8s"]
+        scope:
+        - org-${{ github.repository_owner_id }}
+        - repo-${{ github.repository_id }}
+        runtime:
+        - k8s
+    runs-on: "${{ matrix.scope }}-${{ matrix.architecture }}-${{ matrix.runtime }}"
     steps:
     - name: "Read some Secrets"
       uses: rancher-eio/read-vault-secrets@main
