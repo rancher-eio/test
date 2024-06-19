@@ -3,7 +3,8 @@ name: Changes
 on:
   workflow_call:
     outputs:
-      vault: ${{ jobs.changes.outputs.vault }}
+      vault:
+        value: ${{ jobs.changes.outputs.vault }}
 jobs:
   changes:
     runs-on: ubuntu-22.04
