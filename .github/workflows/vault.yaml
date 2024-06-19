@@ -1,10 +1,13 @@
+name: Vault
 on:
   workflow_call:
     inputs: &inputs
       runs-on:
         default: ubuntu-latest
         required: false
-        type: string    
+        type: string
+  workflow_dispatch:
+    inputs: *inputs
 jobs:
   test:
     permissions:
