@@ -15,16 +15,9 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: ubuntu-22.04
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+    uses: ./.github/workflows/vault.yaml
+    with:
+      runs-on: ubuntu-22.04
 
   self-hosted-org-containers:
     needs: changes
