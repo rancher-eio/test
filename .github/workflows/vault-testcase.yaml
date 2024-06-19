@@ -6,7 +6,21 @@ on:
     - main
     - vault
 jobs:
+  changes:
+    runs-on: ubuntu-22.04
+    outputs:
+      vault: ${{ steps.filter.outputs.vault }}
+    steps:
+    - uses: dorny/paths-filter@v3
+      id: filter
+      with:
+        filters: |
+          vault:
+          - ".github/workflows/vault-testcase.yaml"
+
   github-hosted:
+    needs: changes
+    if: ${{ needs.changes.outputs.vault == "true" }}
     permissions:
       contents: read
       id-token: write
@@ -19,102 +33,76 @@ jobs:
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
     - name: "Use those Secrets"
       run: |
-        echo "${{ env.PROOF_OF_CONCEPT }}"
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  self-hosted-org-amd64:
-    container: ubuntu:22.04
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: org-${{ github.repository_owner_id }}-amd64-k8s
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        echo "${{ env.PROOF_OF_CONCEPT }}"
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  self-hosted-org-arm64:
-    container: ubuntu:22.04
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: org-${{ github.repository_owner_id }}-arm64-k8s
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        echo "${{ env.PROOF_OF_CONCEPT }}"
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  self-hosted-repo-amd64:
-    container: ubuntu:22.04
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: repo-${{ github.repository_id }}-amd64-k8s
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        echo "${{ env.PROOF_OF_CONCEPT }}"
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  self-hosted-repo-arm64:
-    container: ubuntu:22.04
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: repo-${{ github.repository_id }}-arm64-k8s
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        echo "${{ env.PROOF_OF_CONCEPT }}"
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  self-hosted-runs-on-arm64:
-    container: ubuntu:22.04
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: runs-on,runner=2cpu-linux-arm64,run-id=${{ github.run_id }}
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        echo "${{ env.PROOF_OF_CONCEPT }}"
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-  self-hosted-runs-on-amd64:
-    container: ubuntu:22.04
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: runs-on,runner=2cpu-linux-x64,run-id=${{ github.run_id }}
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        echo "${{ env.PROOF_OF_CONCEPT }}"
         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
 
+  self-hosted-org-containers:
+    needs: changes
+    if: ${{ needs.changes.outputs.vault == "true" }}
+    container: ubuntu:22.04
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        architecture:
+        - amd64
+        - arm64
+    runs-on: ["org-${{ github.repository_owner_id }}-${{ matrix.architecture }}-k8s"]
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+
+  self-hosted-repo-containers:
+    needs: changes
+    if: ${{ needs.changes.outputs.vault == "true" }}
+    container: ubuntu:22.04
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        architecture:
+        - amd64
+        - arm64
+    runs-on: ["repo-${{ github.repository_id }}-${{ matrix.architecture }}-k8s"]
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+
+  self-hosted-org-vm:
+    needs: changes
+    if: ${{ needs.changes.outputs.vault == "true" }}
+    container: ubuntu:22.04
+    permissions:
+      contents: read
+      id-token: write
+    strategy:
+      matrix:
+        architecture:
+        - x64
+        - arm64
+    runs-on: runs-on,runner=1cpu-linux-${{ matrix.architecture }},run-id=${{ github.run_id }}
+    steps:
+    - name: "Read some Secrets"
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: "Use those Secrets"
+      run: |
+        grep '' /etc/os-release /proc/cpuinfo /proc/meminfo /proc/partitions
+        uname -a
+        lsblk --list
+        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
