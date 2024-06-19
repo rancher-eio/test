@@ -1,0 +1,19 @@
+---
+name: Changes
+on:
+  workflow_call:
+    outputs:
+      vault: ${{ jobs.changes.outputs.vault }}
+jobs:
+  changes:
+    runs-on: ubuntu-22.04
+    outputs:
+      vault: ${{ steps.changes.outputs.vault }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dorny/paths-filter@v3
+      id: changes
+      with:
+        filters: |
+          vault:
+          - ".github/workflows/vault-testcase.yaml"
