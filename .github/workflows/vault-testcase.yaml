@@ -20,7 +20,7 @@ jobs:
 
   github-hosted:
     needs: changes
-    if: ${{ needs.changes.outputs.vault == "true" }}
+    if: ${{ needs.changes.outputs.vault == 'true' }}
     permissions:
       contents: read
       id-token: write
@@ -37,7 +37,7 @@ jobs:
 
   self-hosted-org-containers:
     needs: changes
-    if: ${{ needs.changes.outputs.vault == "true" }}
+    if: ${{ needs.changes.outputs.vault == 'true' }}
     container: ubuntu:22.04
     permissions:
       contents: read
@@ -60,7 +60,7 @@ jobs:
 
   self-hosted-repo-containers:
     needs: changes
-    if: ${{ needs.changes.outputs.vault == "true" }}
+    if: ${{ needs.changes.outputs.vault == 'true' }}
     container: ubuntu:22.04
     permissions:
       contents: read
@@ -83,7 +83,7 @@ jobs:
 
   self-hosted-org-vm:
     needs: changes
-    if: ${{ needs.changes.outputs.vault == "true" }}
+    if: ${{ needs.changes.outputs.vault == 'true' }}
     container: ubuntu:22.04
     permissions:
       contents: read
