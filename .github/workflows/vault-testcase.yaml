@@ -7,7 +7,7 @@ on:
     - vault
 jobs:
   changes:
-    uses: ./.github/workflows/changes
+    uses: ./.github/workflows/changes.yaml
   github-hosted:
     needs: changes
     if: ${{ needs.changes.outputs.vault == 'true' }}
