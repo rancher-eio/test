@@ -1,0 +1,47 @@
+---
+name: Select Runners
+
+on:
+  workflow_dispatch:
+    inputs:
+      github-hosted:
+        type: boolean
+        default: true
+      self-hosted:
+        type: boolean
+        default: true
+      containers:
+        type: boolean
+        default: true
+      virtual-machines:
+        type: boolean
+        default: true
+      amd64:
+        type: boolean
+        default: true
+      arm64:
+        type: boolean
+        default: true
+      kubernetes:
+        type: boolean
+        default: true
+jobs:
+  select:
+    runs-on: ubuntu-22.04
+    outputs:
+      github-hosted: ${{ steps.github-hosted.outputs.output }}
+    steps:
+    - name: github
+      uses: cloudposse/github-action-jq@v0
+      with:
+        input: |
+          { "inputs": ${{ toJSON(inputs) }} }
+        script: |
+          [(
+            if .inputs["github-hosted"] then
+              [
+                { "runs-on": "ubuntu-22.04" },
+                (if .inputs["containers"] then { "runs-on": "ubuntu-22.04", "container": "ubuntu:22.04" } end)
+              ]
+            end
+          )] | flatten | select(.)
