@@ -6,7 +6,7 @@ on:
     inputs:
       changes-workflow:
         type: string
-        default: changes.yaml
+        default: changes
         required: true
       needs-changes:
         type: boolean
@@ -41,7 +41,7 @@ on:
 
 jobs:
   changes:
-    uses: ./github/workflows/${{ inputs.changes }}
+    uses: ./github/workflows/${{ inputs.changes }}.yaml
 
   github-hosted:
     needs: changes
