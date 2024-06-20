@@ -41,7 +41,7 @@ jobs:
       uses: mikefarah/yq@v4
       with:
         cmd: |
-          echo '${{ toJson(inputs) }}' | yq --output=json --indent=0'
+          echo '${{ toJson(inputs) }}' | yq --output-format=json --indent=0'
             { "inputs": ., "outputs": [] }
             | { "container": .inputs.default-container } as $container
             | with(select(.inputs.github-hosted and .inputs.arm64);
@@ -56,7 +56,7 @@ jobs:
       uses: mikefarah/yq@v4
       with:
         cmd: |
-          echo '${{ toJson(inputs) }}' | yq --output=json --indent=0'
+          echo '${{ toJson(inputs) }}' | yq --output-format=json --indent=0'
             { "inputs": ., "matrix": { "architecture": [], "scope": [], "runtime": [] }, "outputs": [] }
             | with(select(.inputs.amd64); .matrix.architecture += "amd64")
             | with(select(.inputs.arm64); .matrix.architecture += "arm64")
