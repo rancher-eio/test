@@ -46,7 +46,7 @@ jobs:
   github-hosted:
     needs: changes
     if: ${{ inputs.needs-changes && (needs.changes.outputs[inputs.on-change] == 'true') }}
-    uses: ./.github/workflows/${{ inputs.workflow }}@${{github.sha}}
+    uses: ./.github/workflows/${{ inputs.workflow }}.yaml
     with:
       runs-on: ubuntu-22.04
 
@@ -63,7 +63,7 @@ jobs:
         - repo-${{ github.repository_id }}
         runtime:
         - k8s
-    uses: ./.github/workflows/${{ inputs.workflow }}@${{github.sha}}
+    uses: ./.github/workflows/${{ inputs.workflow }}.yaml
     with:
       runs-on: "${{ matrix.scope }}-${{ matrix.architecture }}-${{ matrix.runtime }}"
 
@@ -75,6 +75,6 @@ jobs:
         architecture:
         - x64
         - arm64
-    uses: ./.github/workflows/${{ inputs.workflow }}@${{github.sha}}
+    uses: ./.github/workflows/${{ inputs.workflow }}.yaml
     with:
       runs-on: runs-on,runner=1cpu-linux-${{ matrix.architecture }},run-id=${{ github.run_id }}
