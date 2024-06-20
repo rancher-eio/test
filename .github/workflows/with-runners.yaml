@@ -4,10 +4,6 @@ name: With Runners
 on:
   workflow_call:
     inputs:
-      changes-workflow:
-        type: string
-        default: ./.github/workflows/changes.yaml
-        required: true
       needs-changes:
         type: boolean
         default: true
@@ -41,7 +37,7 @@ on:
 
 jobs:
   changes:
-    uses: ${{ inputs.changes-workflow }}
+    uses: ./.github/workflows/changes.yaml
 
   github-hosted:
     needs: changes
