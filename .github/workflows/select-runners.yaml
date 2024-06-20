@@ -41,7 +41,7 @@ jobs:
       uses: mikefarah/yq@v4
       with:
         cmd: |
-          echo '${{ toJson(inputs) }}' | yq '
+          echo '${{ toJson(inputs) }}' | yq --output=json --indent=0'
             { "inputs": ., "outputs": [] }
             | { "container": .inputs.default-container } as $container
             | with(select(.inputs.github-hosted and .inputs.arm64);
@@ -49,6 +49,28 @@ jobs:
                 | .outputs += $runs-on
                 | with(select(.inputs.containers);
                     .outputs += ( $runs-on * $container )
+                  )
+              )
+          '
+    - name: self-hosted-containers
+      uses: mikefarah/yq@v4
+      with:
+        cmd: |
+          echo '${{ toJson(inputs) }}' | yq --output=json --indent=0'
+            { "inputs": ., "matrix": { "architecture": [], "scope": [], "runtime": [] }, "outputs": [] }
+            | with(select(.inputs.amd64); .matrix.architecture += "amd64")
+            | with(select(.inputs.arm64); .matrix.architecture += "arm64")
+            | with(select(.inputs.org-level);  .matrix.scope += "org-${{ github.repository_owner_id }}")
+            | with(select(.inputs.repo-level); .matrix.scope += "repo-${{ github.repository_id }}")
+            | with(select(.inputs.kubernetes); .matrix.runtime += "k8s")
+            | with(select(.matrix.scope[];
+                . as $scope
+                | with(select(.matrix.architecture[]; 
+                    . as $architecture
+                    | with(select(.matrix.runtime[];
+                        . as $runtime
+                        | .outputs += ([$scope, $architecture, $runtime] | join("-"))
+                      )
                   )
               )
           '
