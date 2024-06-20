@@ -6,7 +6,7 @@ on:
     inputs:
       changes-workflow:
         type: string
-        default: changes.yaml
+        default: changes
         required: true
       needs-changes:
         type: boolean
@@ -18,13 +18,13 @@ on:
         required: false
       workflow:
         type: string
-        default: vault.yaml
+        default: vault
         required: true
   workflow_dispatch:
     inputs:
       changes-workflow:
         type: string
-        default: changes.yaml
+        default: changes
         required: true
       needs-changes:
         type: boolean
@@ -36,12 +36,12 @@ on:
         required: false
       workflow:
         type: string
-        default: vault.yaml
+        default: vault
         required: true
 
 jobs:
   changes:
-    uses: ./.github/workflows/${{ inputs.changes-workflow }}
+    uses: ./.github/workflows/${{ inputs.changes-workflow }}.yaml
 
   github-hosted:
     needs: changes
