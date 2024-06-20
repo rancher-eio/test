@@ -1,0 +1,80 @@
+---
+name: With Runners
+
+on:
+  workflow_call:
+    inputs:
+      changes-workflow:
+        type: string
+        default: ./.github/workflows/changes.yaml
+        required: true
+      needs-changes:
+        type: boolean
+        default: true
+        required: true
+      on-change:
+        type: string
+        default: vault
+        required: false
+      workflow:
+        type: string
+        default: ./.github/workflows/vault.yaml
+        required: true
+  workflow_dispatch:
+    inputs:
+      changes-workflow:
+        type: string
+        default: ./.github/workflows/changes.yaml
+        required: true
+      needs-changes:
+        type: boolean
+        default: true
+        required: true
+      on-change:
+        type: string
+        default: vault
+        required: false
+      workflow:
+        type: string
+        default: ./.github/workflows/vault.yaml
+        required: true
+
+jobs:
+  changes:
+    uses: ${{ inputs.changes-workflow }}
+
+  github-hosted:
+    needs: changes
+    if: ${{ inputs.needs-changes && (needs.changes.outputs[inputs.on-change] == 'true') }}
+    uses: ${{ inputs.workflow }}
+    with:
+      runs-on: ubuntu-22.04
+
+  self-hosted-container:
+    needs: changes
+    if: ${{ inputs.needs-changes && (needs.changes.outputs[inputs.on-change] == 'true') }}
+    strategy:
+      matrix:
+        architecture:
+        - amd64
+        - arm64
+        scope:
+        - org-${{ github.repository_owner_id }}
+        - repo-${{ github.repository_id }}
+        runtime:
+        - k8s
+    uses: ${{ inputs.workflow }}
+    with:
+      runs-on: "${{ matrix.scope }}-${{ matrix.architecture }}-${{ matrix.runtime }}"
+
+  self-hosted-virtual-machine:
+    needs: changes
+    if: ${{ inputs.needs-changes && (needs.changes.outputs[inputs.on-change] == 'true') }}
+    strategy:
+      matrix:
+        architecture:
+        - x64
+        - arm64
+    uses: ${{ inputs.workflow }}
+    with:
+      runs-on: runs-on,runner=1cpu-linux-${{ matrix.architecture }},run-id=${{ github.run_id }}
