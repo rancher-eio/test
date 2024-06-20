@@ -47,7 +47,7 @@ jobs:
       uses: mikefarah/yq@v4
       with:
         cmd: |
-          echo '${{ toJson(inputs) }}' | yq --output-format=json --indent=0'
+          echo '${{ toJson(inputs) }}' | yq --output-format=json --indent=0 '
             { "inputs": ., "outputs": [] }
             | { "container": .inputs.default-container } as $container
             | with(select(.inputs.github-hosted and .inputs.arm64);
