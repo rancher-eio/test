@@ -4,7 +4,6 @@ on:
   push:
     branches:
     - main
-    - vault
 jobs:
   changes:
     uses: ./.github/workflows/changes.yaml
@@ -19,9 +18,6 @@ jobs:
   self-hosted-containers:
     needs: changes
     if: ${{ needs.changes.outputs.vault == 'true' }}
-    permissions:
-      contents: read
-      id-token: write
     strategy:
       matrix:
         architecture:
@@ -39,25 +35,11 @@ jobs:
   self-hosted-org-vm:
     needs: changes
     if: ${{ needs.changes.outputs.vault == 'true' }}
-    container: ubuntu:22.04
-    permissions:
-      contents: read
-      id-token: write
     strategy:
       matrix:
         architecture:
         - x64
         - arm64
-    runs-on: runs-on,runner=1cpu-linux-${{ matrix.architecture }},run-id=${{ github.run_id }}
-    steps:
-    - name: "Read some Secrets"
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-    - name: "Use those Secrets"
-      run: |
-        grep '' /etc/os-release /proc/cpuinfo /proc/meminfo /proc/partitions
-        uname -a
-        lsblk --list
-        test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+    uses: ./.github/workflows/vault.yaml
+    with:
+      runs-on: runs-on,runner=1cpu-linux-${{ matrix.architecture }},run-id=${{ github.run_id }}
