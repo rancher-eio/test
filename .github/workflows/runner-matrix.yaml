@@ -33,6 +33,8 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-22.04
+    container: ubuntu:22.04
     steps:
     - uses: cloudposse/github-action-jq@v0
       with:
