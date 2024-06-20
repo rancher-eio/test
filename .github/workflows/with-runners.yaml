@@ -41,7 +41,7 @@ on:
 
 jobs:
   changes:
-    uses: ./.github/workflows/${{ inputs.changes-workflow }}@${{github.sha}}
+    uses: ./.github/workflows/${{ inputs.changes-workflow }}
 
   github-hosted:
     needs: changes
