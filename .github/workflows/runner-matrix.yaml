@@ -38,5 +38,5 @@ jobs:
     - uses: cloudposse/github-action-jq@v0
       with:
         input: |
-          { "inputs": ${{ inputs }} }
+          { "inputs": ${{ toJSON(inputs) }} }
         script: .
