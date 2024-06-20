@@ -32,16 +32,7 @@ jobs:
       github-hosted: ${{ steps.github-hosted.outputs.output }}
     steps:
     - name: github
-      uses: cloudposse/github-action-jq@v0
+      uses: mikefarah/yq@v4
       with:
-        input: |
-          { "inputs": ${{ toJSON(inputs) }} }
-        script: |
-          [(
-            if .inputs["github-hosted"] then
-              [
-                { "runs-on": "ubuntu-22.04" },
-                (if .inputs["containers"] then { "runs-on": "ubuntu-22.04", "container": "ubuntu:22.04" } end)
-              ]
-            end
-          )] | flatten | select(.)
+        cmd: |
+          yq . <<<'${{toJson(inputs)}}'
