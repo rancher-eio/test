@@ -62,22 +62,39 @@ jobs:
       uses: mikefarah/yq@v4
       with:
         cmd: |
-          echo '${{ toJson(inputs) }}' | yq --output-format=json --indent=0'
-            { "inputs": ., "matrix": { "architecture": [], "scope": [], "runtime": [] }, "outputs": [] }
+          echo '${{ toJson(inputs) }}' | yq --output-format=json --indent=0 '
+            {
+              "inputs": .,
+              "matrix": {
+                "architecture": [],
+                "scope": [],
+                "runtime": []
+              },
+              "outputs": []
+            }
             | with(select(.inputs.amd64); .matrix.architecture += "amd64")
             | with(select(.inputs.arm64); .matrix.architecture += "arm64")
             | with(select(.inputs.org-level);  .matrix.scope += "org-${{ github.repository_owner_id }}")
             | with(select(.inputs.repo-level); .matrix.scope += "repo-${{ github.repository_id }}")
             | with(select(.inputs.kubernetes); .matrix.runtime += "k8s")
+            | .inputs  ref $inputs
+            | .matrix  ref $matrix
             | .outputs ref $outputs
-            | with(select(.matrix.scope[]);
-                . as $scope
-                | with(select(.matrix.architecture[]); 
-                    . as $architecture
-                    | with(select(.matrix.runtime[]);
-                        . as $runtime
-                        | $outputs += ([$scope, $architecture, $runtime] | join("-"))
+            | with($matrix.scope[];
+                . ref $scope
+                | with($matrix.architecture[];
+                    . ref $architecture
+                    | with($matrix.runtime[];
+                        . ref $runtime
+                        | with([$scope, $architecture, $runtime] | join("-");
+                            . ref $runs-on
+                            | $outputs += {
+                                "runs-on": $runs-on,
+                                "container": $inputs.default-container
+                              }
+                          )
                       )
                   )
               )
+            | .outputs
           '
