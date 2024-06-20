@@ -25,6 +25,12 @@ on:
       kubernetes:
         type: boolean
         default: true
+      github-runner:
+        type: string
+        default: ubuntu-22.04
+      default-container:
+        type: string
+        default: ubuntu:22.04
 jobs:
   select:
     runs-on: ubuntu-22.04
@@ -35,4 +41,12 @@ jobs:
       uses: mikefarah/yq@v4
       with:
         cmd: |
-          echo '${{toJson(inputs)}}' | yq .
+          echo '${{ toJson(inputs) }}' | yq '
+            { "inputs": ., "outputs": [] }
+            | with(select(.inputs.github-hosted and .inputs.arm64);
+                .outputs += { "runs-on": .inputs.github-runner }
+                | with(select(.inputs.containers);
+                    .outputs += { "runs-on": .inputs.github-runner, "container": .inputs.default-container }
+                  )
+              )
+          '
