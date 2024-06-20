@@ -10,6 +10,12 @@ on:
       self-hosted:
         type: boolean
         default: true
+      org-level:
+        type: boolean
+        default: true
+      repo-level:
+        type: boolean
+        default: true
       containers:
         type: boolean
         default: true
@@ -63,13 +69,14 @@ jobs:
             | with(select(.inputs.org-level);  .matrix.scope += "org-${{ github.repository_owner_id }}")
             | with(select(.inputs.repo-level); .matrix.scope += "repo-${{ github.repository_id }}")
             | with(select(.inputs.kubernetes); .matrix.runtime += "k8s")
+            | .outputs ref $outputs
             | with(select(.matrix.scope[]);
                 . as $scope
                 | with(select(.matrix.architecture[]); 
                     . as $architecture
                     | with(select(.matrix.runtime[]);
                         . as $runtime
-                        | .outputs += ([$scope, $architecture, $runtime] | join("-"))
+                        | $outputs += ([$scope, $architecture, $runtime] | join("-"))
                       )
                   )
               )
