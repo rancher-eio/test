@@ -43,10 +43,12 @@ jobs:
         cmd: |
           echo '${{ toJson(inputs) }}' | yq '
             { "inputs": ., "outputs": [] }
+            | { "container": .inputs.default-container } as $container
             | with(select(.inputs.github-hosted and .inputs.arm64);
-                .outputs += { "runs-on": .inputs.github-runner }
+                { "runs-on": .inputs.github-runner } as $runs-on
+                | .outputs += $runs-on
                 | with(select(.inputs.containers);
-                    .outputs += { "runs-on": .inputs.github-runner, "container": .inputs.default-container }
+                    .outputs += ( $runs-on * $container )
                   )
               )
           '
