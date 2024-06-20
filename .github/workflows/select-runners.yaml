@@ -4,9 +4,6 @@ name: Select Runners
 on:
   workflow_dispatch:
     inputs:
-      github-hosted:
-        type: boolean
-        default: true
       self-hosted:
         type: boolean
         default: true
@@ -31,12 +28,6 @@ on:
       kubernetes:
         type: boolean
         default: true
-      github-runner:
-        type: string
-        default: ubuntu-22.04
-      default-container:
-        type: string
-        default: ubuntu:22.04
 jobs:
   select:
     runs-on: ubuntu-22.04
@@ -88,10 +79,7 @@ jobs:
                         . ref $runtime
                         | with([$scope, $architecture, $runtime] | join("-");
                             . ref $runs-on
-                            | $outputs += {
-                                "runs-on": $runs-on,
-                                "container": $inputs.default-container
-                              }
+                            | $outputs += { "runs-on": $runs-on }
                           )
                       )
                   )
