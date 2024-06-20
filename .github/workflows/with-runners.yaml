@@ -41,12 +41,12 @@ on:
 
 jobs:
   changes:
-    uses: ./${{ inputs.changes-workflow }}@${{ github.sha }}
+    uses: ./${{ inputs.changes-workflow }}@${{github.sha}}
 
   github-hosted:
     needs: changes
     if: ${{ inputs.needs-changes && (needs.changes.outputs[inputs.on-change] == 'true') }}
-    uses: ./${{ inputs.workflow }}@${{ github.sha }}
+    uses: ./${{ inputs.workflow }}@${{github.sha}}
     with:
       runs-on: ubuntu-22.04
 
@@ -63,7 +63,7 @@ jobs:
         - repo-${{ github.repository_id }}
         runtime:
         - k8s
-    uses: ./${{ inputs.workflow }}@${{ github.sha }}
+    uses: ./${{ inputs.workflow }}@${{github.sha}}
     with:
       runs-on: "${{ matrix.scope }}-${{ matrix.architecture }}-${{ matrix.runtime }}"
 
@@ -75,6 +75,6 @@ jobs:
         architecture:
         - x64
         - arm64
-    uses: ./${{ inputs.workflow }}@${{ github.sha }}
+    uses: ./${{ inputs.workflow }}@${{github.sha}}
     with:
       runs-on: runs-on,runner=1cpu-linux-${{ matrix.architecture }},run-id=${{ github.run_id }}
