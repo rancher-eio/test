@@ -4,55 +4,50 @@ name: With Runners
 on:
   workflow_call:
     inputs:
-      changes-workflow:
-        type: string
-        default: changes
-        required: true
-      needs-changes:
-        type: boolean
-        default: true
-        required: true
-      on-change:
-        type: string
-        default: vault
-        required: false
       workflow:
         type: string
         default: vault
         required: true
+      github-hosted:
+        type: boolean
+        default: true
+      self-hosted:
+        type: boolean
+        default: true
+      containers:
+        type: boolean
+        default: true
+      virtual-machines:
+        type: boolean
+        default: true
   workflow_dispatch:
     inputs:
-      changes-workflow:
-        type: string
-        default: changes
-        required: true
-      needs-changes:
-        type: boolean
-        default: true
-        required: true
-      on-change:
-        type: string
-        default: vault
-        required: false
       workflow:
         type: string
         default: vault
         required: true
+      github-hosted:
+        type: boolean
+        default: true
+      self-hosted:
+        type: boolean
+        default: true
+      containers:
+        type: boolean
+        default: true
+      virtual-machines:
+        type: boolean
+        default: true
 
 jobs:
-  changes:
-    uses: ./.github/workflows/${{ inputs.changes-workflow }}.yaml
-
   github-hosted:
-    needs: changes
-    if: ${{ inputs.needs-changes && (needs.changes.outputs[inputs.on-change] == 'true') }}
+    if: ${{ inputs.github-hosted }}
     uses: ./.github/workflows/${{ inputs.workflow }}.yaml
     with:
       runs-on: ubuntu-22.04
 
   self-hosted-container:
-    needs: changes
-    if: ${{ inputs.needs-changes && (needs.changes.outputs[inputs.on-change] == 'true') }}
+    if: ${{ inputs.self-hosted && inputs.containers }}
     strategy:
       matrix:
         architecture:
@@ -68,8 +63,7 @@ jobs:
       runs-on: "${{ matrix.scope }}-${{ matrix.architecture }}-${{ matrix.runtime }}"
 
   self-hosted-virtual-machine:
-    needs: changes
-    if: ${{ inputs.needs-changes && (needs.changes.outputs[inputs.on-change] == 'true') }}
+    if: ${{ inputs.self-hosted && inputs.virtual-machines }}
     strategy:
       matrix:
         architecture:
