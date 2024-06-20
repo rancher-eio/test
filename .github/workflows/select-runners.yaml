@@ -63,11 +63,11 @@ jobs:
             | with(select(.inputs.org-level);  .matrix.scope += "org-${{ github.repository_owner_id }}")
             | with(select(.inputs.repo-level); .matrix.scope += "repo-${{ github.repository_id }}")
             | with(select(.inputs.kubernetes); .matrix.runtime += "k8s")
-            | with(select(.matrix.scope[];
+            | with(select(.matrix.scope[]);
                 . as $scope
-                | with(select(.matrix.architecture[]; 
+                | with(select(.matrix.architecture[]); 
                     . as $architecture
-                    | with(select(.matrix.runtime[];
+                    | with(select(.matrix.runtime[]);
                         . as $runtime
                         | .outputs += ([$scope, $architecture, $runtime] | join("-"))
                       )
