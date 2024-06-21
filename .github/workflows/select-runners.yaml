@@ -4,85 +4,64 @@ name: Select Runners
 on:
   workflow_dispatch:
     inputs:
-      self-hosted:
+      arch/amd64:
         type: boolean
         default: true
-      org-level:
+      arch/arm64:
         type: boolean
         default: true
-      repo-level:
+      pool/org:
         type: boolean
         default: true
-      containers:
+      pool/repo:
         type: boolean
         default: true
-      virtual-machines:
+      using/containers:
         type: boolean
         default: true
-      amd64:
-        type: boolean
-        default: true
-      arm64:
-        type: boolean
-        default: true
-      kubernetes:
+      using/virtual-machines:
         type: boolean
         default: true
 jobs:
   select:
     runs-on: ubuntu-22.04
     outputs:
-      github-hosted: ${{ steps.github-hosted.outputs.output }}
+      self-hosted-containers: ${{ steps.self-hosted-containers.outputs.output }}
     steps:
-    - name: github
-      uses: mikefarah/yq@v4
-      with:
-        cmd: |
-          echo '${{ toJson(inputs) }}' | yq --output-format=json --indent=0 '
-            { "inputs": ., "outputs": [] }
-            | { "container": .inputs.default-container } as $container
-            | with(select(.inputs.github-hosted and .inputs.arm64);
-                { "runs-on": .inputs.github-runner } as $runs-on
-                | .outputs += $runs-on
-                | with(select(.inputs.containers);
-                    .outputs += ( $runs-on * $container )
-                  )
-              )
-          '
     - name: self-hosted-containers
       uses: mikefarah/yq@v4
       with:
         cmd: |
           echo '${{ toJson(inputs) }}' | yq --output-format=json --indent=0 '
             {
-              "inputs": .,
+              "inputs": with_entries(.key |= downcase),
               "matrix": {
-                "architecture": [],
-                "scope": [],
+                "arch": [],
+                "pool": [],
+                "uses": [],
                 "runtime": []
               },
               "outputs": []
             }
-            | with(select(.inputs.amd64); .matrix.architecture += "amd64")
-            | with(select(.inputs.arm64); .matrix.architecture += "arm64")
-            | with(select(.inputs.org-level);  .matrix.scope += "org-${{ github.repository_owner_id }}")
-            | with(select(.inputs.repo-level); .matrix.scope += "repo-${{ github.repository_id }}")
-            | with(select(.inputs.kubernetes); .matrix.runtime += "k8s")
+            | with(select(.inputs.arch/* or .inputs.arch/amd64 or .inputs.arch/x86_64 or .inputs.arch/x64); .matrix.arch += "amd64")
+            | with(select(.inputs.arch/* or .inputs.arch/arm64 or .inputs.arch/aarch64); .matrix.arch += "arm64")
+            | with(select(.inputs.pool/* or .inputs.pool/org);  .matrix.pool += "org-${{ github.repository_owner_id }}")
+            | with(select(.inputs.pool/* or .inputs.pool/repo); .matrix.pool += "repo-${{ github.repository_id }}")
+            | with(select(.inputs.using/containers); .matrix.runtime += "k8s")
             | .inputs  ref $inputs
             | .matrix  ref $matrix
             | .outputs ref $outputs
-            | with($matrix.scope[];
-                . ref $scope
-                | with($matrix.architecture[];
-                    . ref $architecture
+            | with($matrix.pool[];
+                . ref $pool
+                | with($matrix.arch[];
+                    . ref $arch
                     | with($matrix.runtime[];
                         . ref $runtime
-                        | with([$scope, $architecture, $runtime] | join("-");
+                        | with([$pool, $arch, $runtime] | join("-");
                             . ref $runs-on
                             | $outputs += { "runs-on": $runs-on }
                           )
                       )
                   )
               )
-            | .outputs
           '
