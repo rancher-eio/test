@@ -1,9 +1,11 @@
 ---
 name: Vault Testcase
+
 on:
   push:
     branches:
     - main
+
 jobs:
   changes:
     uses: ./.github/workflows/changes.yaml
