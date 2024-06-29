@@ -9,7 +9,7 @@ on:
 jobs:
   install:
     container: registry.suse.com/bci/bci-base:15.5.36.14.1
-    runs-on: repo-${{ github.repository_id }}-arm64-k8s
+    runs-on: repo-${{ github.repository_id }}-amd64-k8s
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
     steps:
       - run: |
