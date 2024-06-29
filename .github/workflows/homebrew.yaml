@@ -8,6 +8,7 @@ on:
 
 jobs:
   fetch-installer:
+    container: alpine
     runs-on: repo-${{ github.repository_id }}-arm64-k8s
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
     steps:
