@@ -1,0 +1,15 @@
+name: Homebrew
+
+on:
+  workflow_call: {}
+  workflow_dispatch: {}
+  push:
+    paths: .github/workflows/homebrew.yaml
+
+jobs:
+  fetch-installer:
+    runs-on: repo-${{ github.repository_id }}-arm64-k8s
+    # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
+    steps:
+      - run: |
+          curl -fsSLO https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
