@@ -13,4 +13,5 @@ jobs:
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
     steps:
       - run: |
-          curl -fsSLO https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+          wget https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+          base64 install.sh
