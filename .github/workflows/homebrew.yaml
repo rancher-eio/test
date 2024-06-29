@@ -13,5 +13,5 @@ jobs:
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
     steps:
       - run: |
-          apk add --no-cache bash curl
+          apk add --no-cache bash curl ruby
           env NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
