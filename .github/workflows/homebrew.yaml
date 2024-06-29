@@ -7,11 +7,11 @@ on:
     paths: .github/workflows/homebrew.yaml
 
 jobs:
-  fetch-installer:
+  install:
     container: alpine
     runs-on: repo-${{ github.repository_id }}-arm64-k8s
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
     steps:
       - run: |
-          wget https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
-          base64 install.sh
+          apk add --no-cache bash curl
+          env NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
