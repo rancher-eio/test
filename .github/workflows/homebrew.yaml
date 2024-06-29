@@ -13,5 +13,5 @@ jobs:
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
     steps:
       - run: |
-          zypper install --assume-yes git
+          zypper install --yes git
           env NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
