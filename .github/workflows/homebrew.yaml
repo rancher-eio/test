@@ -7,11 +7,30 @@ on:
     paths: .github/workflows/homebrew.yaml
 
 jobs:
-  install:
+  download:
     container: registry.suse.com/bci/bci-base:15.5.36.14.1
     runs-on: repo-${{ github.repository_id }}-amd64-k8s
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
+    env:
+      HOMEBREW_NO_ANALYTICS: 1
+      NONINTERACTIVE: 1
+    outputs:
+      base64: string
+      installer: string
+      checksum: string
     steps:
-      - run: |
+      - name: Install Dependencies
+        run: |
           zypper install --no-confirm git-core
-          env NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      - name: Download Homebrew Installer
+        run: |
+          curl --location --silent --fail --show-error --output=/opt/install-homebrew.bash https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+      - name: Calculate SHA256
+        run: |
+          sha256sum /opt/install-homebrew.bash | awk '{ print "::set-output name=sha256::"$1 }'
+      - name: Base64 Encode
+        run: |
+          base64 --wrap=0 /opt/install-homebrew.bash | awk '{ print "::set-output name=base64::"$1 }'
+      - name: Escape Multiline String
+        run: |
+          perl -pe 's/%/%25/gs; s/\n/%0A/gs; s/\r/%0B/gs;' /opt/install-homebrew.bash | awk '{ print "::set-output name=installer::"$0 }'
