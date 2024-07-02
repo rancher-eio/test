@@ -24,7 +24,7 @@ jobs:
           zypper install --no-confirm git-core
       - name: Download Homebrew Installer
         run: |
-          curl --location --silent --fail --show-error --output=/opt/install-homebrew.bash https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+          curl --location --silent --fail --show-error --output /opt/install-homebrew.bash https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
       - name: Calculate SHA256
         run: |
           sha256sum /opt/install-homebrew.bash | awk '{ print "::set-output name=sha256::"$1 }'
