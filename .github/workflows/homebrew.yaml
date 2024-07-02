@@ -11,9 +11,6 @@ jobs:
     container: registry.suse.com/bci/bci-base:15.6.47.5.5
     runs-on: repo-${{ github.repository_id }}-amd64-k8s
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
-    env:
-      HOMEBREW_NO_ANALYTICS: 1
-      NONINTERACTIVE: 1
     outputs:
       base64: "${{ steps.download.outputs.base64 }}"
       installer: "${{ steps.download.outputs.escaped }}"
@@ -44,4 +41,5 @@ jobs:
     steps:
     - name: Validate Checksum
       run: |
-        echo "${{ needs.download.outputs.checksum }}"
+        SHA256=$(echo "${{ needs.download.outputs.installer }}" | sha256sum | cut -d ' ' -f 1)
+        test "${SHA256}" = "${{ needs.download.outputs.checksum }}"
