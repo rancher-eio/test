@@ -21,16 +21,19 @@ jobs:
     steps:
       - name: Install Dependencies
         run: |
-          zypper install --no-confirm git-core awk
+          zypper install --no-confirm git-core
       - name: Download Homebrew Installer
         run: |
           curl --location --silent --fail --show-error --output /opt/install-homebrew.bash https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
       - name: Calculate SHA256
         run: |
-          sha256sum /opt/install-homebrew.bash | awk '{ print "::set-output name=sha256::"$1 }'
+          SHA256="$(sha256sum /opt/install-homebrew.bash | cut -d ' ' -f 1)"
+          echo "sha256=${SHA256}" >> "${GITHUB_OUTPUT}"
       - name: Base64 Encode
         run: |
-          base64 --wrap=0 /opt/install-homebrew.bash | awk '{ print "::set-output name=base64::"$1 }'
+          BASE64="$(base64 --wrap=0 /opt/install-homebrew.bash)"
+          echo "base64=${BASE64}" >> "${GITHUB_OUTPUT}"
       - name: Escape Multiline String
         run: |
-          perl -pe 's/%/%25/gs; s/\n/%0A/gs; s/\r/%0B/gs;' /opt/install-homebrew.bash | awk '{ print "::set-output name=installer::"$0 }'
+          INSTALLER="$(perl -p -e 's/%/%25/gs; s/\n/%0A/gs; s/\r/%0B/gs;' /opt/install-homebrew.bash)"
+          echo "installer=${INSTALLER}" >> "${GITHUB_OUTPUT}"
