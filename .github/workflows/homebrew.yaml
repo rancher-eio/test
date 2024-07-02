@@ -47,4 +47,4 @@ jobs:
     steps:
     - name: Validate Checksum
       run: |
-        echo "${ jobs.download.outputs.sha256 }"
+        echo "${{ jobs.download.outputs.sha256 }}"
