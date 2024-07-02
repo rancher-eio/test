@@ -28,7 +28,7 @@ jobs:
       - name: Calculate SHA256
         run: |
           SHA256="$(sha256sum /opt/install-homebrew.bash | cut -d ' ' -f 1)"
-          echo "sha256=${SHA256}" >> "${GITHUB_OUTPUT}"
+          echo "sha256=${SHA256}" | tee -a "${GITHUB_OUTPUT}"
       - name: Base64 Encode
         run: |
           BASE64="$(base64 --wrap=0 /opt/install-homebrew.bash)"
@@ -37,3 +37,14 @@ jobs:
         run: |
           INSTALLER="$(perl -p -e 's/%/%25/gs; s/\n/%0A/gs; s/\r/%0B/gs;' /opt/install-homebrew.bash)"
           echo "installer=${INSTALLER}" >> "${GITHUB_OUTPUT}"
+  install:
+    needs: download
+    container: registry.suse.com/bci/bci-base:15.6.47.5.5
+    runs-on: repo-${{ github.repository_id }}-amd64-k8s
+    env:
+      HOMEBREW_NO_ANALYTICS: 1
+      NONINTERACTIVE: 1
+    steps:
+    - name: Validate Checksum
+      run: |
+        echo "${ jobs.download.outputs.sha256 }"
