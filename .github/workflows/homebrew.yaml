@@ -8,7 +8,7 @@ on:
 
 jobs:
   download:
-    container: registry.suse.com/bci/bci-base:15.5.36.14.1
+    container: registry.suse.com/bci/bci-base:15.6.47.5.5
     runs-on: repo-${{ github.repository_id }}-amd64-k8s
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
     env:
@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Install Dependencies
         run: |
-          zypper install --no-confirm git-core
+          zypper install --no-confirm git-core awk
       - name: Download Homebrew Installer
         run: |
           curl --location --silent --fail --show-error --output /opt/install-homebrew.bash https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
