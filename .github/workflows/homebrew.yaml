@@ -28,7 +28,7 @@ jobs:
       - name: Calculate SHA256
         run: |
           SHA256="$(sha256sum /opt/install-homebrew.bash | cut -d ' ' -f 1)"
-          echo "sha256=${SHA256}" | tee -a "${GITHUB_OUTPUT}"
+          echo "checksum=${SHA256}" | tee -a "${GITHUB_OUTPUT}"
       - name: Base64 Encode
         run: |
           BASE64="$(base64 --wrap=0 /opt/install-homebrew.bash)"
@@ -47,4 +47,4 @@ jobs:
     steps:
     - name: Validate Checksum
       run: |
-        echo "${{ jobs.download.outputs.sha256 }}"
+        echo "${{ needs.download.outputs.checksum }}"
