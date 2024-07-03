@@ -20,6 +20,7 @@ jobs:
         run: |
           zypper install --no-confirm git-core
       - name: Download Installer
+        id: download
         run: |
           curl --location --silent --fail --show-error --output /opt/install-homebrew.bash https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
           BASE64="$(base64 --wrap=0 /opt/install-homebrew.bash)"
@@ -41,5 +42,5 @@ jobs:
     steps:
     - name: Validate Checksum
       run: |
-        SHA256=$(echo "${{ needs.download.outputs.base64 }}" | sha256sum | cut -d ' ' -f 1)
+        SHA256=$(echo "${{ needs.download.outputs.installer }}" | sha256sum | cut -d ' ' -f 1)
         test "${SHA256}" = "${{ needs.download.outputs.checksum }}"
