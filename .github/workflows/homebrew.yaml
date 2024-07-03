@@ -43,3 +43,6 @@ jobs:
       run: |
         SHA256=$(echo "${{ needs.download.outputs.base64 }}" | base64 -d | sha256sum | cut -d ' ' -f 1)
         test "${SHA256}" = "${{ needs.download.outputs.sha256 }}"
+    - name: Install Homebrew
+      run: |
+        echo "${{ needs.download.outputs.base64 }}" | base64 -d | bash
