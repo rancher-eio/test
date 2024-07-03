@@ -13,20 +13,19 @@ jobs:
     # runs-on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
     outputs:
       base64: "${{ steps.download.outputs.base64 }}"
-      installer: "${{ steps.download.outputs.escaped }}"
-      checksum: "${{ steps.checksum.outputs.sha256 }}"
+      sha256: "${{ steps.checksum.outputs.sha256 }}"
     steps:
       - name: Install Dependencies
         run: |
           zypper install --no-confirm git-core
       - name: Download Installer
-        id: download
         run: |
           curl --location --silent --fail --show-error --output /opt/install-homebrew.bash https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
+      - name: Encode
+        id: encode
+        run: |
           BASE64="$(base64 --wrap=0 /opt/install-homebrew.bash)"
-          echo "base64=${BASE64}" >> "${GITHUB_OUTPUT}"
-          INSTALLER="$(perl -p -e 's/%/%25/gs; s/\n/%0A/gs; s/\r/%0B/gs;' /opt/install-homebrew.bash)"
-          echo "escaped=${INSTALLER}" >> "${GITHUB_OUTPUT}"
+          echo "base64=${BASE64}" >> "${GITHUB_OUTPUT}"        
       - name: Calculate Checksum(s)
         id: checksum
         run: |
@@ -40,6 +39,7 @@ jobs:
       HOMEBREW_NO_ANALYTICS: 1
       NONINTERACTIVE: 1
     steps:
-    - name: Install Homebrew
+    - name: Validate Checksum
       run: |
-        bash -c "${{ needs.download.outputs.installer }}"
+        SHA256=$(echo "${{ needs.download.outputs.base64 }}" | base64 -d | sha256sum | cut -d ' ' -f 1)
+        test "${SHA256}" = "${{ needs.download.outputs.sha256 }}"
