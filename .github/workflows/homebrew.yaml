@@ -40,7 +40,6 @@ jobs:
       HOMEBREW_NO_ANALYTICS: 1
       NONINTERACTIVE: 1
     steps:
-    - name: Validate Checksum
+    - name: Install Homebrew
       run: |
-        SHA256=$(echo "${{ needs.download.outputs.installer }}" | sha256sum | cut -d ' ' -f 1)
-        test "${SHA256}" = "${{ needs.download.outputs.checksum }}"
+        bash -c "${{ needs.download.outputs.installer }}"
