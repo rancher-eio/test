@@ -15,9 +15,6 @@ jobs:
       base64: "${{ steps.encode.outputs.base64 }}"
       sha256: "${{ steps.checksum.outputs.sha256 }}"
     steps:
-      - name: Install Dependencies
-        run: |
-          zypper install --no-confirm git-core
       - name: Download Installer
         run: |
           curl --location --silent --fail --show-error --output /opt/install-homebrew.bash https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh
@@ -43,6 +40,9 @@ jobs:
       run: |
         SHA256=$(echo "${{ needs.download.outputs.base64 }}" | base64 -d | sha256sum | cut -d ' ' -f 1)
         test "${SHA256}" = "${{ needs.download.outputs.sha256 }}"
+    - name: Install Dependencies
+      run: |
+        zypper install --no-confirm git-core
     - name: Install Homebrew
       run: |
         echo "${{ needs.download.outputs.base64 }}" | base64 -d | bash
