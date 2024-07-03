@@ -41,5 +41,5 @@ jobs:
     steps:
     - name: Validate Checksum
       run: |
-        SHA256=$(echo "${{ needs.download.outputs.installer }}" | sha256sum | cut -d ' ' -f 1)
+        SHA256=$(echo "${{ needs.download.outputs.base64 }}" | sha256sum | cut -d ' ' -f 1)
         test "${SHA256}" = "${{ needs.download.outputs.checksum }}"
