@@ -46,4 +46,7 @@ jobs:
         - arm64
     uses: ./.github/workflows/vault.yaml
     with:
-      runs-on: runs-on,runner=1cpu-linux-${{ matrix.architecture }},run-id=${{ github.run_id }}
+      runs-on:
+      - runs-on
+      - runner=1cpu-linux-${{ matrix.architecture }}
+      - run-id=${{ github.run_id }}
