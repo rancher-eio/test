@@ -16,11 +16,10 @@ jobs:
         - x64
         - arm64
         cpu:
-        - "1"
-        - "1"
-        - "1"
+        - 1cpu
+        - 2cpu
+        - 4cpu
         os:
-        - linux
         - linux
     runs-on: runs-on,runner=${{ matrix.cpu }}-${{ matrix.os }}-${{ matrix.architecture }},run-id=${{ github.run_id }}
     steps:
