@@ -1,4 +1,4 @@
-name: Vault
+name: Vault Secret Isolation Test
 on:
   workflow_call:
     inputs:
