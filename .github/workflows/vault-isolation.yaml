@@ -66,7 +66,7 @@ jobs:
       run: |
         test "${{ env[inputs.export-as] }}" = "${{ inputs.expected-value }}"
 
-    - id: Verify Secret Not Exported
+    - id: validate_env
       run: |
         test -z "${{ env[inputs.export-as] }}"
 
