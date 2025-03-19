@@ -1,61 +1,50 @@
-name: Vault Secret Isolation Test
+name: Vault
 on:
   workflow_call:
     inputs:
       container:
-        description: "Container image to use"
         default: ubuntu:22.04
         required: false
         type: string
       runs-on:
-        description: "Runner label"
         default: ubuntu-22.04
         required: false
         type: string
       from-secret:
-        description: "Vault secret path"
         type: string
         default: secret/data/github-actions/test
         required: false
-      read-key:
-        description: "Key to read from the secret"
+      read-key: 
         type: string
         default: status
         required: false
       export-as:
-        description: "Name for the output (for testing only)"
         type: string
         default: PROOF_OF_CONCEPT
         required: false
       expected-value:
-        description: "Expected value from Vault"
         type: string
         default: success
         required: false
   workflow_dispatch:
     inputs:
       runs-on:
-        description: "Runner label"
         default: ubuntu-latest
         required: false
         type: string
       from-secret:
-        description: "Vault secret path"
         type: string
         default: secret/data/github-actions/test
         required: false
-      read-key:
-        description: "Key to read from the secret"
+      read-key: 
         type: string
         default: status
         required: false
       export-as:
-        description: "Name for the output (for testing only)"
         type: string
         default: PROOF_OF_CONCEPT
         required: false
       expected-value:
-        description: "Expected value from Vault"
         type: string
         default: success
         required: false
@@ -68,23 +57,11 @@ jobs:
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - id: fetch
-        uses: rancher-eio/updated-read-vault-secrets@main
-        with:
-          secrets: |
-            ${{ inputs.from-secret }} ${{ inputs.read-key }} | ${{ inputs.export-as }}
-          # Ensure that the new action does NOT export the secret to the environment
-          exportEnv: false
-
-      - id: validate
-        run: |
-          # Compare the output captured from the fetch step with the expected value.
-          if [ "${{ steps.fetch.outputs.vault-secrets }}" = "${{ inputs.expected-value }}" ]; then
-            echo "Test passed: secret value is as expected."
-          else
-            echo "Test failed: expected '${{ inputs.expected-value }}', but got '${{ steps.fetch.outputs.vault-secrets }}'."
-            exit 1
-          fi
+    - id: fetch
+      uses: rancher-eio/updated-read-vault-secrets@main
+      with:
+        secrets: |
+          ${{ inputs.from-secret }} ${{ inputs.read-key }} | ${{ inputs.export-as }}
+    - id: validate
+      run: |
+        test "${{ env[inputs.export-as] }}" = "${{ inputs.expected-value }}"
