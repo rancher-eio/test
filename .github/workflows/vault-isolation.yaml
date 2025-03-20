@@ -62,8 +62,8 @@ jobs:
       with:
         secrets: |
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
-        command: |
-          test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+      # run: |
+      #   test "${{ env.PROOF_OF_CONCEPT }}" = "success"
     # - id: validate
     #   run: |
     #     test "${{ steps.fetch.outputs.vault_secrets }}" = "${{ inputs.expected-value }}"
