@@ -58,7 +58,7 @@ jobs:
     container: ${{ inputs.container }}
     steps:
     - id: fetch
-      uses: rancher-eio/updated-read-vault-secrets@main
+      uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
           ${{ inputs.from-secret }} ${{ inputs.read-key }} | ${{ inputs.export-as }}
