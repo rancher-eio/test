@@ -72,6 +72,10 @@ jobs:
       run: |
         test -z "${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}"
         
+    - id: validate_empty_env_session
+      run: |
+        test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+        
     - id: validate_empty_output
       run: |
         test -z "${{ steps.fetch.outputs.vault_secrets }}"
