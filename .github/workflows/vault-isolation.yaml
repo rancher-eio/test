@@ -70,7 +70,7 @@ jobs:
 
     - id: validate_empty_env
       run: |
-        test -z "${{ env.PROOF_OF_CONCEPT }}"
+        test -z "${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}"
         
     - id: validate_empty_output
       run: |
