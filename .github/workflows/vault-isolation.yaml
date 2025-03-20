@@ -75,6 +75,7 @@ jobs:
     - id: empty_env_session
       run: |
         export ACTIONS_ID_TOKEN_REQUEST_TOKEN=""
+        test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
         
     - id: validate_empty_env_session
       run: |
