@@ -64,9 +64,12 @@ jobs:
           ${{ inputs.from-secret }} ${{ inputs.read-key }} | ${{ inputs.export-as }}
     - id: validate
       run: |
-        test "${{ env[inputs.export-as] }}" = "${{ inputs.expected-value }}"
+        test "${{ steps.fetch.outputs.vault_secrets }}" = "${{ inputs.expected-value }}"
 
-    - id: validate_env
+    - id: validate_empty_env
       run: |
         test -z "${{ env[inputs.export-as] }}"
-
+        
+    - id: validate_empty_output
+      run: |
+        test -z "${{ steps.fetch.outputs.vault_secrets }}"
