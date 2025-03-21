@@ -55,17 +55,14 @@ jobs:
       id-token: write
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
+    outputs: 
+      PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
     steps:
     - id: fetch
       uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
-      # run: |
-      #   test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-    # - id: validate
-    #   run: |
-    #     test "${{ steps.fetch.outputs.vault_secrets }}" = "${{ inputs.expected-value }}"
 
     - id: validate_empty_env
       run: |
