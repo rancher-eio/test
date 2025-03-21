@@ -48,39 +48,42 @@ on:
         type: string
         default: success
         required: false
-
+        
 jobs:
-  test:
+  fetch-secrets:
     permissions:
       contents: read
       id-token: write
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
+    outputs: 
+      proof_of_concept: ${{ steps.fetch.outputs.proof_of_concept }}
     steps:
     - id: fetch
       uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT
-      # run: |
-      #   test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-    # - id: validate
-    #   run: |
-    #     test "${{ steps.fetch.outputs.vault_secrets }}" = "${{ inputs.expected-value }}"
-
-    - id: validate_empty_env
-      run: |
-        test -z "${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}"
-        
-    - id: empty_env_session
-      run: |
-        export ACTIONS_ID_TOKEN_REQUEST_TOKEN=""
-        test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
-        
-    - id: validate_empty_env_session
-      run: |
-        test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
-        
-    - id: validate_empty_output
-      run: |
-        test -z "${{ steps.fetch.outputs.vault_secrets }}"
+          secret/data/github-actions/test status 
+  test:  
+    runs-on: ${{ inputs.runs-on }}
+    container: ${{ inputs.container }}
+    needs: fetch-secrets
+    steps:
+      - id: validate
+        env:
+          PROOF_OF_CONCEPT: ${{needs.fetch-secrets.outputs.proof_of_concept}}
+        run: |
+          test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+         
+      - id: validate_empty_env
+        run: |
+          test -z "${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}"
+          
+      - id: empty_env_session
+        run: |
+          export ACTIONS_ID_TOKEN_REQUEST_TOKEN=""
+          test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+          
+      - id: validate_empty_env_session
+        run: |
+          test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
