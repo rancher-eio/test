@@ -57,17 +57,17 @@ jobs:
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
     outputs: 
-      PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
+      proof_of_concept: ${{ steps.vault.outputs.proof_of_concept }}
     steps:
     - id: vault
       uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT 
+          secret/data/github-actions/test status | proof_of_concept 
           
     - name: Debug Output
       run: |
-        echo "PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
+        echo "proof_of_concept: ${{ steps.vault.outputs.proof_of_concept }}"
           
   test:  
     runs-on: ${{ inputs.runs-on }}
@@ -81,7 +81,7 @@ jobs:
         # env:
         #   PROOF_OF_CONCEPT: ${{needs.fetch-secrets.outputs.proof_of_concept}}
         run: |
-          test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "success"
+          test "${{ needs.fetch-secrets.outputs.proof_of_concept }}" = "success"
           #test "${{ env.PROOF_OF_CONCEPT }}" = "success"
          
       - id: validate_empty_env
