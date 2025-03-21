@@ -63,7 +63,7 @@ jobs:
       uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT ;
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT 
           
     - name: Debug Output
       run: |
