@@ -58,7 +58,7 @@ jobs:
     outputs: 
       PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
     steps:
-    - id: fetch
+    - id: vault
       uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
