@@ -57,13 +57,13 @@ jobs:
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
     outputs: 
-      PROOF_OF_CONCEPT: ${{ steps.fetch.outputs.PROOF_OF_CONCEPT }}
+      PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
     steps:
-    - id: fetch
+    - id: vault
       uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
-          secret/data/github-actions/test status | PROOF_OF_CONCEPT 
+          secret/data/github-actions/test status | PROOF_OF_CONCEPT ;
           
   test:  
     runs-on: ${{ inputs.runs-on }}
