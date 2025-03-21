@@ -63,6 +63,9 @@ jobs:
       with:
         secrets: |
           secret/data/github-actions/test status | PROOF_OF_CONCEPT
+    - name: Debug Output
+      run: |
+        echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
 
     - id: validate_empty_env
       run: |
