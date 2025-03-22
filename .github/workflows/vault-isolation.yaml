@@ -68,7 +68,8 @@ jobs:
           
     - name: Debug Output
       run: |
-        echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
+        #echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
+        echo "All Outputs: ${{ toJSON(steps.vault.outputs) }}"
 
     - id: validate_empty_env
       run: |
