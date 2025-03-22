@@ -136,7 +136,7 @@ jobs:
       uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
-           ${{ inputs.from-secret }} ${{ inputs.read-key }} | ${{ inputs.export-as }}
+           ${{ inputs.from-secret }} ${{ inputs.read-key }} PROOF_OF_CONCEPT
           
     - name: Debug Output
       run: |
