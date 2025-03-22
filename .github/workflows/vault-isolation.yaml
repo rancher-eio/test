@@ -50,24 +50,23 @@ on:
         required: false
 jobs:
   fetch-secrets:
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ${{ inputs.runs-on }}
-    container: ${{ inputs.container }}
-    outputs: 
-      PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}  
-    steps:
+      permissions:
+        contents: read
+        id-token: write
+      runs-on: ${{ inputs.runs-on }}
+      container: ${{ inputs.container }}
+      outputs: 
+        PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
+      steps:
       - id: vault
         uses: rancher-eio/read-vault-secrets@isolation
         with:
           secrets: |
-            ${{ inputs.from-secret }} ${{ inputs.read-key }} | ${{ inputs.export-as }} 
-
+            secret/data/github-actions/test status | PROOF_OF_CONCEPT
       - name: Debug Output
         run: |
-          echo "PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}" 
-
+          echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
+          
   use-secrets:
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
