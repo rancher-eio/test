@@ -48,33 +48,34 @@ on:
         type: string
         default: success
         required: false
-# jobs:
-#   fetch-secrets:
-#       permissions:
-#         contents: read
-#         id-token: write
-#       runs-on: ${{ inputs.runs-on }}
-#       container: ${{ inputs.container }}
-#       outputs: 
-#         PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
-#       steps:
-#       - id: vault
-#         uses: rancher-eio/read-vault-secrets@isolation
-#         with:
-#           secrets: |
-#             secret/data/github-actions/test status | PROOF_OF_CONCEPT
-#       - name: Debug Output
-#         run: |
-#           echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
+jobs:
+  fetch-secrets:
+      permissions:
+        contents: read
+        id-token: write
+      runs-on: ${{ inputs.runs-on }}
+      container: ${{ inputs.container }}
+      outputs: 
+        PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
+      steps:
+      - id: vault
+        uses: rancher-eio/read-vault-secrets@isolation
+        with:
+          secrets: |
+            secret/data/github-actions/test status | PROOF_OF_CONCEPT
+      - name: Debug Output
+        run: |
+          echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
           
-#   use-secrets:
-#     runs-on: ${{ inputs.runs-on }}
-#     container: ${{ inputs.container }}
-#     needs: [fetch-secrets]
-#     steps:
-#       - name: Validate Secret
-#         run: |
-#           test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}"
+  use-secrets:
+    runs-on: ${{ inputs.runs-on }}
+    container: ${{ inputs.container }}
+    needs: [fetch-secrets]
+    steps:
+      - name: Validate Secret
+        run: |
+          test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}"
+          
 ###################################
   # fetch-secrets:
   #   permissions:
@@ -122,42 +123,42 @@ on:
   #         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
 
 #################################
-jobs:
-  fetch-secrets:
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ${{ inputs.runs-on }}
-    container: ${{ inputs.container }}
-    outputs: 
-      PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
-    steps:
-    - id: vault
-      uses: rancher-eio/read-vault-secrets@isolation
-      with:
-        secrets: |
-           ${{ inputs.from-secret }} ${{ inputs.read-key }} PROOF_OF_CONCEPT
+# jobs:
+#   fetch-secrets:
+#     permissions:
+#       contents: read
+#       id-token: write
+#     runs-on: ${{ inputs.runs-on }}
+#     container: ${{ inputs.container }}
+#     outputs: 
+#       PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
+#     steps:
+#     - id: vault
+#       uses: rancher-eio/read-vault-secrets@isolation
+#       with:
+#         secrets: |
+#            ${{ inputs.from-secret }} ${{ inputs.read-key }} | PROOF_OF_CONCEPT
           
-    - name: Debug Output
-      run: |
-        echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
+#     - name: Debug Output
+#       run: |
+#         echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
           
-  test:  
-    runs-on: ${{ inputs.runs-on }}
-    container: ${{ inputs.container }}
-    permissions:
-      contents: read 
-    needs: fetch-secrets
-    steps:
-      - id: validate
-        name: Validate Secrets
-        # env:
-        #   PROOF_OF_CONCEPT: ${{needs.fetch-secrets.outputs.proof_of_concept}}
-        run: |
-          test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "success"
-          #test "${{ env.PROOF_OF_CONCEPT }}" = "success"
+#   test:  
+#     runs-on: ${{ inputs.runs-on }}
+#     container: ${{ inputs.container }}
+#     permissions:
+#       contents: read 
+#     needs: fetch-secrets
+#     steps:
+#       - id: validate
+#         name: Validate Secrets
+#         # env:
+#         #   PROOF_OF_CONCEPT: ${{needs.fetch-secrets.outputs.proof_of_concept}}
+#         run: |
+#           test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "success"
+#           #test "${{ env.PROOF_OF_CONCEPT }}" = "success"
          
-      - id: validate_empty_env
-        name: Check for OIDC Tokens
-        run: |
-          test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+#       - id: validate_empty_env
+#         name: Check for OIDC Tokens
+#         run: |
+#           test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
