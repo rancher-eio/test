@@ -66,9 +66,10 @@ jobs:
       - name: Debug Output
         run: |
           echo "Direct output access check:"
-          PROOF_OF_CONCEPT=$(echo '${{ steps.secrets.outputs.secrets_json }}' | jq -r '.PROOF_OF_CONCEPT')
-          echo "PROOF_OF_CONCEPT output exists: $PROOF_OF_CONCEPT != '' }}"
-  
+          PROOF_OF_CONCEPT=$(echo '${{ steps.fetch-secret.outputs.secret_values }}' | jq -r '.PROOF_OF_CONCEPT')
+          echo "PROOF_OF_CONCEPT value length: ${#PROOF_OF_CONCEPT} characters"
+          echo "PROOF_OF_CONCEPT output exists: ${{ length(PROOF_OF_CONCEPT) > 0 }}"
+          
           
   use-secrets:
     runs-on: ${{ inputs.runs-on }}
@@ -79,7 +80,8 @@ jobs:
     steps:
       - name: Validate Secret
         run: |
-          if [ "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}" ]; then
+          PROOF_OF_CONCEPT=$(echo '${{ needs.fetch-secrets.outputs.secrets_json }}' | jq -r '.PROOF_OF_CONCEPT')
+          if [ "$PROOF_OF_CONCEPT" = "${{ inputs.expected-value }}" ]; then
             echo "✅ Secret validation successful"
           else
             echo "❌ Secret validation failed"
