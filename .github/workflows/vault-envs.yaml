@@ -1,4 +1,4 @@
-name: Vault Environment Vars Tests
+name: Vault Env Tests
 on:
   workflow_call:
     inputs:
