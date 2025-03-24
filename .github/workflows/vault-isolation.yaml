@@ -56,25 +56,33 @@ jobs:
       runs-on: ${{ inputs.runs-on }}
       container: ${{ inputs.container }}
       outputs: 
-        PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
+        PROOF_OF_CONCEPT: ${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT }}
       steps:
-      - id: vault
+      - id: fetch-secret
         uses: rancher-eio/read-vault-secrets@isolation
         with:
           secrets: |
             secret/data/github-actions/test status | PROOF_OF_CONCEPT
       - name: Debug Output
         run: |
-          echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
+          echo "proof_of_concept: ${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT }}"
           
   use-secrets:
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
     needs: [fetch-secrets]
+    permissions:
+      contents: read
     steps:
       - name: Validate Secret
         run: |
-          test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}"
+          if [ "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}" ]; then
+            echo "✅ Secret validation successful"
+          else
+            echo "❌ Secret validation failed"
+            exit 1
+          fi
+          #test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}"
           
 ###################################
   # fetch-secrets:
