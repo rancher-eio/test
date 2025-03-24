@@ -1,4 +1,4 @@
-name: Vault Job Secrets Test
+name: Vault Step Outputs
 on:
   workflow_call:
     inputs:
