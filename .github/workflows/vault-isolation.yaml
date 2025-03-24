@@ -69,7 +69,6 @@ jobs:
           PROOF_OF_CONCEPT=$(echo '${{ steps.fetch-secret.outputs.secret_values }}' | jq -r '.PROOF_OF_CONCEPT')
           echo "PROOF_OF_CONCEPT key: $PROOF_OF_CONCEPT value"
           
-          
   use-secrets:
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
@@ -77,6 +76,11 @@ jobs:
     permissions:
       contents: read
     steps:
+      - name: Debug Output from Previous Job
+        run: |
+          echo "Output received from previous job:"
+          echo "Raw value: '${{ needs.fetch-secrets.outputs.secret_values }}'"
+      
       - name: Validate Secret
         run: |
           PROOF_OF_CONCEPT=$(echo '${{ needs.fetch-secrets.outputs.secret_values }}' | jq -r '.PROOF_OF_CONCEPT')
@@ -87,90 +91,4 @@ jobs:
             exit 1
           fi
           #test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}"
-          
-###################################
-  # fetch-secrets:
-  #   permissions:
-  #     contents: read
-  #     id-token: write
-  #   runs-on: ${{ inputs.runs-on }}
-  #   container: ${{ inputs.container }}
-  #   outputs:
-  #     secrets_json: ${{ steps.vault.outputs.secrets_json }}
-  #   # outputs: 
-  #   #   PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
-  #   steps:
-  #   - id: vault
-  #     uses: rancher-eio/read-vault-secrets@isolation
-  #     with:
-  #       secrets: |
-  #         secret/data/github-actions/test status | PROOF_OF_CONCEPT
-          
-  #   - name: Debug Output
-  #     run: |
-  #       #echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
-  #       echo "All Outputs: ${{ toJSON(steps.vault.outputs) }}"
-
-  #   - id: validate_empty_env
-  #     run: |
-  #       test -z "${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}"
         
-  #   - id: validate_empty_output
-  #     run: |
-  #       test -z "${{ steps.fetch.outputs.vault_secrets }}"
-        
-  # use-secrets:  
-  #   runs-on: ${{ inputs.runs-on }}
-  #   container: ${{ inputs.container }}
-  #   permissions:
-  #     contents: read 
-  #   needs: fetch-secrets
-  #   steps:
-  #     - name: Parse Secrets
-  #       run: |
-  #         echo "PROOF_OF_CONCEPT=${{ fromJSON(env.SECRETS_JSON).PROOF_OF_CONCEPT }}" >> $GITHUB_ENV
-  #         # echo "::add-mask::${{ env.PROOF_OF_CONCEPT }}"
-  #     - name: Validate Secrets
-  #       run: |
-  #         test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-
-#################################
-# jobs:
-#   fetch-secrets:
-#     permissions:
-#       contents: read
-#       id-token: write
-#     runs-on: ${{ inputs.runs-on }}
-#     container: ${{ inputs.container }}
-#     outputs: 
-#       PROOF_OF_CONCEPT: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}
-#     steps:
-#     - id: vault
-#       uses: rancher-eio/read-vault-secrets@isolation
-#       with:
-#         secrets: |
-#            ${{ inputs.from-secret }} ${{ inputs.read-key }} | PROOF_OF_CONCEPT
-          
-#     - name: Debug Output
-#       run: |
-#         echo "proof_of_concept: ${{ steps.vault.outputs.PROOF_OF_CONCEPT }}"
-          
-#   test:  
-#     runs-on: ${{ inputs.runs-on }}
-#     container: ${{ inputs.container }}
-#     permissions:
-#       contents: read 
-#     needs: fetch-secrets
-#     steps:
-#       - id: validate
-#         name: Validate Secrets
-#         # env:
-#         #   PROOF_OF_CONCEPT: ${{needs.fetch-secrets.outputs.proof_of_concept}}
-#         run: |
-#           test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "success"
-#           #test "${{ env.PROOF_OF_CONCEPT }}" = "success"
-         
-#       - id: validate_empty_env
-#         name: Check for OIDC Tokens
-#         run: |
-#           test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
