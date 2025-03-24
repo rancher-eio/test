@@ -66,11 +66,9 @@ jobs:
       - name: Debug Output
         run: |
           echo "Direct output access check:"
-          echo "PROOF_OF_CONCEPT output exists: ${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT != '' }}"
-    
-          echo "${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT }}" > /tmp/secret.txt
-          echo "Value from file: $(cat /tmp/secret.txt)"
-          rm /tmp/secret.txt
+          PROOF_OF_CONCEPT=$(echo '${{ steps.secrets.outputs.secrets_json }}' | jq -r '.PROOF_OF_CONCEPT')
+          echo "PROOF_OF_CONCEPT output exists: $PROOF_OF_CONCEPT != '' }}"
+  
           
   use-secrets:
     runs-on: ${{ inputs.runs-on }}
