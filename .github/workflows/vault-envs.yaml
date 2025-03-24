@@ -77,10 +77,10 @@ jobs:
     permissions:
       contents: read
     steps:
-        - name: Validate ENV from Previous Job
-          run: |
-            echo "Output received from previous step:"
-            test "${{ env[inputs.export-as] }}" = "${{ inputs.expected-value }}"
+      - name: Validate ENV from Previous Job
+        run: |
+          echo "Output received from previous step:"
+          test "${{ env[inputs.export-as] }}" = "${{ inputs.expected-value }}"
           
       - name: Validate Secret
         run: |
