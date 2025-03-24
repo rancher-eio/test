@@ -65,7 +65,13 @@ jobs:
             secret/data/github-actions/test status | PROOF_OF_CONCEPT
       - name: Debug Output
         run: |
-          echo "proof_of_concept: ${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT }}"
+          echo "Direct output access check:"
+          echo "PROOF_OF_CONCEPT output exists: ${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT != '' }}"
+          echo "Value length: ${{ length(steps.fetch-secret.outputs.PROOF_OF_CONCEPT) }}"
+    
+          echo "${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT }}" > /tmp/secret.txt
+          echo "Value from file: $(cat /tmp/secret.txt)"
+          rm /tmp/secret.txt
           
   use-secrets:
     runs-on: ${{ inputs.runs-on }}
