@@ -59,7 +59,7 @@ jobs:
         PROOF_OF_CONCEPT: ${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT }}
       steps:
       - id: fetch-secret
-        uses: rancher-eio/read-vault-secrets@test-outputs
+        uses: rancher-eio/read-vault-secrets@test-envs
         with:
           secrets: |
             secret/data/github-actions/test status | PROOF_OF_CONCEPT
