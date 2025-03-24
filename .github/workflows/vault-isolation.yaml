@@ -67,8 +67,7 @@ jobs:
         run: |
           echo "Direct output access check:"
           PROOF_OF_CONCEPT=$(echo '${{ steps.fetch-secret.outputs.secret_values }}' | jq -r '.PROOF_OF_CONCEPT')
-          echo "PROOF_OF_CONCEPT value length: ${#PROOF_OF_CONCEPT} characters"
-          echo "PROOF_OF_CONCEPT output exists: ${{ length(PROOF_OF_CONCEPT) > 0 }}"
+          echo "PROOF_OF_CONCEPT key: $PROOF_OF_CONCEPT value"
           
           
   use-secrets:
