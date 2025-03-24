@@ -56,7 +56,7 @@ jobs:
       runs-on: ${{ inputs.runs-on }}
       container: ${{ inputs.container }}
       outputs: 
-        PROOF_OF_CONCEPT: ${{ steps.fetch-secret.outputs.PROOF_OF_CONCEPT }}
+        secret_values: ${{ steps.fetch-secret.outputs.secret_values }}
       steps:
       - id: fetch-secret
         uses: rancher-eio/read-vault-secrets@isolation
@@ -79,7 +79,7 @@ jobs:
     steps:
       - name: Validate Secret
         run: |
-          PROOF_OF_CONCEPT=$(echo '${{ needs.fetch-secrets.outputs.secrets_json }}' | jq -r '.PROOF_OF_CONCEPT')
+          PROOF_OF_CONCEPT=$(echo '${{ needs.fetch-secrets.outputs.secret_values }}' | jq -r '.PROOF_OF_CONCEPT')
           if [ "$PROOF_OF_CONCEPT" = "${{ inputs.expected-value }}" ]; then
             echo "✅ Secret validation successful"
           else
