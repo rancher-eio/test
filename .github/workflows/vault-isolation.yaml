@@ -81,7 +81,7 @@ jobs:
       - name: Debug Output from Previous Job
         run: |
           echo "Output received from previous job:"
-          echo "Raw value: '${{ needs.fetch-secrets.outputs.secret_values }}'"
+          echo "Raw value: '${{ needs.fetch-secrets.outputs.vault_data }}'"
       
       - name: Validate Secret
         run: |
