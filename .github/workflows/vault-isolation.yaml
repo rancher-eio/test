@@ -56,14 +56,13 @@ jobs:
       runs-on: ${{ inputs.runs-on }}
       container: ${{ inputs.container }}
       outputs: 
-        vault_data: ${{ steps.fetch-secret.outputs.vault_data }}
+        secret_values: ${{ steps.fetch-secret.outputs.vault_data }}
       steps:
       - id: fetch-secret
         uses: rancher-eio/read-vault-secrets@isolation
         with:
           secrets: |
             secret/data/github-actions/test status | PROOF_OF_CONCEPT
-            
       - name: Debug Output
         run: |
           echo "Direct output access check:"
@@ -91,5 +90,3 @@ jobs:
             echo "❌ Secret validation failed"
             exit 1
           fi
-          #test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}"
-        
