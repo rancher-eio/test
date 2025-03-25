@@ -56,17 +56,19 @@ jobs:
       runs-on: ${{ inputs.runs-on }}
       container: ${{ inputs.container }}
       outputs: 
-        secret_values: ${{ steps.fetch-secret.outputs.secret_values }}
+        vault_data: ${{ steps.fetch-secret.outputs.vault_data }}
+        
       steps:
       - id: fetch-secret
         uses: rancher-eio/read-vault-secrets@isolation
         with:
           secrets: |
             secret/data/github-actions/test status | PROOF_OF_CONCEPT
+            
       - name: Debug Output
         run: |
           echo "Direct output access check:"
-          PROOF_OF_CONCEPT=$(echo '${{ steps.fetch-secret.outputs.secret_values }}' | jq -r '.PROOF_OF_CONCEPT')
+          PROOF_OF_CONCEPT=$(echo '${{ steps.fetch-secret.outputs.vault_data }}' | jq -r '.PROOF_OF_CONCEPT')
           echo "PROOF_OF_CONCEPT key: $PROOF_OF_CONCEPT value"
           
   use-secrets:
@@ -83,12 +85,10 @@ jobs:
       
       - name: Validate Secret
         run: |
-          PROOF_OF_CONCEPT=$(echo '${{ needs.fetch-secrets.outputs.secret_values }}' | jq -r '.PROOF_OF_CONCEPT')
+          PROOF_OF_CONCEPT=$(echo '${{ needs.fetch-secrets.outputs.vault_data }}' | jq -r '.PROOF_OF_CONCEPT')
           if [ "$PROOF_OF_CONCEPT" = "${{ inputs.expected-value }}" ]; then
             echo "✅ Secret validation successful"
           else
             echo "❌ Secret validation failed"
             exit 1
           fi
-          #test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}"
-        
