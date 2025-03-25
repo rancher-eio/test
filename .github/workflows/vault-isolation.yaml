@@ -69,6 +69,7 @@ jobs:
           PROOF_OF_CONCEPT=$(echo '${{ steps.fetch-secret.outputs.vault_data }}' | jq -r '.PROOF_OF_CONCEPT')
           echo "PROOF_OF_CONCEPT key: $PROOF_OF_CONCEPT value"
           
+          
   use-secrets:
     runs-on: ${{ inputs.runs-on }}
     container: ${{ inputs.container }}
@@ -76,11 +77,6 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Debug Output from Previous Job
-        run: |
-          echo "Output received from previous job:"
-          echo "Raw value: '${{ needs.fetch-secrets.outputs.vault_data }}'"
-      
       - name: Validate Secret
         run: |
           PROOF_OF_CONCEPT=$(echo '${{ needs.fetch-secrets.outputs.vault_data }}' | jq -r '.PROOF_OF_CONCEPT')
@@ -90,3 +86,4 @@ jobs:
             echo "❌ Secret validation failed"
             exit 1
           fi
+          #test "${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}" = "${{ inputs.expected-value }}"
