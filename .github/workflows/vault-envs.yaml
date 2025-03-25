@@ -79,10 +79,10 @@ jobs:
     # env:
     #   PROOF_OF_CONCEPT: ${{ needs.fetch-secrets.outputs.PROOF_OF_CONCEPT }}
     steps:
-      - name: Validate ENV from Previous Job
+      - name: Validate that env variables are empty
         run: |
           echo "Output received from previous step:"
-          test "${{ env[inputs.export-as] }}" = "${{ inputs.expected-value }}"
+          test "${{ env[inputs.export-as] }}" = ""
           echo "Env variable PROOF_OF_CONCEPT should not be set"
           
       - name: Validate Secret
