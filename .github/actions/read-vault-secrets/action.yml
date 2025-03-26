@@ -45,12 +45,5 @@ runs:
       with:
         script: |
           for (const [key, value] of Object.entries(${{ toJSON(steps.vault.outputs) }})) {
-            process.stdout.write(`key is "${key}"\n`);
+            core.setOutput(key, value);
           }
-    - id: output
-      shell: sh
-      run: |
-        file ${GITHUB_OUTPUT}
-        # echo "declared=success" >> ${GITHUB_OUTPUT}
-        echo "declared<<ghadelimiter_declared\nsuccess\nghadelimiter_declared" >> ${GITHUB_OUTPUT}
-        echo "undeclared<<ghadelimiter_undeclared\nsuccess\nghadelimiter_undeclared" >> ${GITHUB_OUTPUT}
