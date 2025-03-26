@@ -10,22 +10,10 @@ inputs:
     description: "the secrets to fetch from the vault server"
     required: false
     default: secret/data/github-actions/test status
-  exportEnv:
-    description: "Whether or not export secrets as environment variables."
-    required: false
-    default: true
-  exportToken:
-    description: "Whether or not export Vault token as environment variables."
-    required: false
-    default: false
-  outputToken:
-    description: 'Whether or not to set the `vault_token` output to contain the Vault token after authentication.'
-    default: false
-    required: false
-#outputs:
-#  declared:
-#    description: "a declared output"
-#    value: ${{ steps.output.outputs.declared }}
+outputs:
+  declared:
+    description: "a declared output"
+    value: ${{ steps.output.outputs.declared }}
 runs:
   using: composite
   steps:
@@ -38,8 +26,9 @@ runs:
         path: ${{ github.repository_owner }}
         role: ${{ github.event.repository.name }}
         secrets: ${{ inputs.secrets }}
-        exportEnv: ${{ inputs.exportEnv }}
-        exportToken: ${{ inputs.exportToken }}
+        exportEnv: false
+        exportToken: false
+        outputToken: false
     - name: GitHub Script
       uses: actions/github-script@v7
       with:
