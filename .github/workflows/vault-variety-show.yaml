@@ -1,0 +1,15 @@
+---
+name: Vault Variety Show
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/vault-variety-show.yaml
+
+jobs:
+  default:
+    uses: ./.github/workflows/vault.yaml
+    with:
+      runs-on: ubuntu-24.04
