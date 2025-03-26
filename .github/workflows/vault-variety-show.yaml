@@ -22,14 +22,13 @@ jobs:
         secrets: |
           secret/data/github-actions/test status | FOO ;
           secret/data/github-actions/test status | BAR
-    - id: environment
-      run: |
-        set -o nounset
-        set -o errexit
-        
-        test "${FOO}" = "success"
-        test "${BAR}" = "success"
-    - id: outputs
+    - name: ENV does not contain secrets
+      run: test -z "${FOO}" && test -z "${BAR}"
+    - name: VAULT_TOKEN is empty
+      run: test -z "${VAULT_TOKEN}"
+    - name: ACTIONS_ID_TOKEN_REQUEST_URL is empty
+      run: test -z "${ACTIONS_ID_TOKEN_REQUEST_URL}"
+    - name: secrets are available as outputs
       run: |
         true \
         && test "${{ steps.fetch.outputs.declared }}" = "success" \
