@@ -44,5 +44,6 @@ runs:
       shell: sh
       run: |
         file ${GITHUB_OUTPUT}
-        echo "declared=success" >> ${GITHUB_OUTPUT}
+        # echo "declared=success" >> ${GITHUB_OUTPUT}
+        echo "declared<<ghadelimiter_declared\nsuccess\nghadelimiter_declared" >> ${GITHUB_OUTPUT}
         echo "undeclared<<ghadelimiter_undeclared\nsuccess\nghadelimiter_undeclared" >> ${GITHUB_OUTPUT}
