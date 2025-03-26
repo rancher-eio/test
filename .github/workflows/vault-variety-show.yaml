@@ -14,8 +14,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    runs-on: ${{ inputs.runs-on }}
-    container: ${{ inputs.container }}
+    runs-on: ubuntu-24.04
     steps:
     - id: fetch
       uses: rancher-eio/test/.github/actions/read-vault-secrets@main
