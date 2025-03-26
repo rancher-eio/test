@@ -22,10 +22,18 @@ jobs:
         secrets: |
           secret/data/github-actions/test status | FOO ;
           secret/data/github-actions/test status | BAR
-    - id: validate
+    - id: environment
       run: |
         set -o nounset
         set -o errexit
         
         test "${FOO}" = "success"
         test "${BAR}" = "success"
+    - id: outputs
+      run: |
+        set -o nounset
+        set -o errexit
+
+        test "${{ steps.fetch.outputs.FOO }}" = "success"
+        test "${{ steps.fetch.outputs.BAR }}" = "success"
+        
