@@ -18,6 +18,10 @@ inputs:
     description: "Whether or not export Vault token as environment variables."
     required: false
     default: false
+  outputToken:
+    description: 'Whether or not to set the `vault_token` output to contain the Vault token after authentication.'
+    default: false
+    required: false
 outputs:
   declared:
     description: "a declared output"
@@ -42,3 +46,4 @@ runs:
         file ${GITHUB_OUTPUT}
         echo "declared=success" >> ${GITHUB_OUTPUT}
         echo "undeclared=success" >> ${GITHUB_OUTPUT}
+        echo "::set-output name=undeclared::success"
