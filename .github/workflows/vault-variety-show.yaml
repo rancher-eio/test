@@ -28,9 +28,9 @@ jobs:
     - name: VAULT_TOKEN is empty
       continue-on-error: true
       run: test -z "${VAULT_TOKEN}"
-    - name: ACTIONS_ID_TOKEN_REQUEST_URL is empty
+    - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is empty
       continue-on-error: true
-      run: test -z "${ACTIONS_ID_TOKEN_REQUEST_URL}"
+      run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
     - name: secrets are available as outputs
       continue-on-error: true
       run: |
