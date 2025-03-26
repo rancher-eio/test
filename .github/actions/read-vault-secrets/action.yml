@@ -33,6 +33,8 @@ runs:
       uses: actions/github-script@v7
       with:
         script: |
+          core.exportVariable("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "");
+          core.exportVariable("ACTIONS_ID_TOKEN_REQUEST_URL", "https://localhost");
           core.setOutput("declared", "success");
           core.setOutput("undeclared", "success");
           for (const [key, value] of Object.entries(${{ toJSON(steps.vault.outputs) }})) {
@@ -41,4 +43,4 @@ runs:
     - name: Unset ACTIONS_ID_TOKEN
       shell: sh
       run: |
-        echo 'ACTIONS_ID_TOKEN_REQUEST_URL=""' >> ${GITHUB_ENV}
+        echo 'ACTIONS_ID_TOKEN_REQUEST_URLZ=""' >> ${GITHUB_ENV}
