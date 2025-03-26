@@ -5,11 +5,19 @@ inputs:
   address:
     description: "the address of a deployed vault server"
     required: false
-    default: https://vault.rancher.engineering
+    default: https://vault.rancher.kitchen
   secrets:
     description: "the secrets to fetch from the vault server"
     required: false
     default: secret/data/github-actions/test status
+  exportEnv:
+    description: 'Whether or not export secrets as environment variables.'
+    required: false
+    default: 'true'
+  exportToken:
+    description: 'Whether or not export Vault token as environment variables.'
+    required: false
+    default: 'false'
 runs:
   using: composite
   steps:
@@ -22,5 +30,5 @@ runs:
         path: ${{ github.repository_owner }}
         role: ${{ github.event.repository.name }}
         secrets: ${{ inputs.secrets }}
-        exportEnv: false
-        exportToken: false
+        exportEnv: ${{ inputs.exportEnv }}
+        exportToken: ${{ inputs.exportToken }}
