@@ -23,16 +23,12 @@ jobs:
           secret/data/github-actions/test status | FOO ;
           secret/data/github-actions/test status | BAR
     - name: ENV does not contain secrets
-      continue-on-error: true
       run: test -z "${FOO}" && test -z "${BAR}"
     - name: VAULT_TOKEN is empty
-      continue-on-error: true
       run: test -z "${VAULT_TOKEN}"
-    - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is empty
-      continue-on-error: true
-      run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+    - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is DISCARDED
+      run: test "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" = "DISCARDED"
     - name: secrets are available as outputs
-      continue-on-error: true
       run: |
         true \
         && test "${{ steps.fetch.outputs.declared }}" = "success" \
