@@ -18,6 +18,10 @@ inputs:
     description: "Whether or not export Vault token as environment variables."
     required: false
     default: false
+outputs:
+  declared:
+    description: "a declared output"
+    value: ${{ steps.output.outputs.declared }}
 runs:
   using: composite
   steps:
@@ -32,7 +36,9 @@ runs:
         secrets: ${{ inputs.secrets }}
         exportEnv: ${{ inputs.exportEnv }}
         exportToken: ${{ inputs.exportToken }}
-    - id: undeclared-output
+    - id: output
       shell: sh
       run: |
+        file ${GITHUB_OUTPUT}
+        echo "declared=success" >> ${GITHUB_OUTPUT}
         echo "undeclared=success" >> ${GITHUB_OUTPUT}
