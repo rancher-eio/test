@@ -6,10 +6,27 @@ on:
     branches:
     - main
     paths:
+    - .github/actions/read-vault-secrets/action.yml
     - .github/workflows/vault-variety-show.yaml
 
 jobs:
   default:
-    uses: ./.github/workflows/vault.yaml
-    with:
-      runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ${{ inputs.runs-on }}
+    container: ${{ inputs.container }}
+    steps:
+    - id: fetch
+      uses: rancher-eio/test/.github/actions/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | FOO ;
+          secret/data/github-actions/test status | BAR
+    - id: validate
+      run: |
+        set -o nounset
+        set -o errexit
+        
+        test "${FOO}" = "success"
+        test "${BAR}" = "success"
