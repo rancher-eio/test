@@ -45,5 +45,4 @@ runs:
       run: |
         file ${GITHUB_OUTPUT}
         echo "declared=success" >> ${GITHUB_OUTPUT}
-        echo "undeclared=success" >> ${GITHUB_OUTPUT}
-        echo "::set-output name=undeclared::success"
+        echo "undeclared<<ghadelimiter_undeclared\nsuccess\nghadelimiter_undeclared" >> ${GITHUB_OUTPUT}
