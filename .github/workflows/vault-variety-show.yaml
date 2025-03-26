@@ -29,11 +29,10 @@ jobs:
         
         test "${FOO}" = "success"
         test "${BAR}" = "success"
-    - id: outputs
+    - id: undeclared-outputs
       run: |
         set -o nounset
         set -o errexit
 
-        test "${{ steps.fetch.outputs.FOO }}" = "success"
-        test "${{ steps.fetch.outputs.BAR }}" = "success"
+        test "${{ steps.fetch.outputs.undeclared }}" = "success"
         
