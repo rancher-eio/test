@@ -40,6 +40,13 @@ runs:
         secrets: ${{ inputs.secrets }}
         exportEnv: ${{ inputs.exportEnv }}
         exportToken: ${{ inputs.exportToken }}
+    - name: GitHub Script
+      uses: actions/github-script@v7
+      with:
+        script: |
+          for (key of ["foo", "bar"]) {
+            process.stdout.write(`key is "${key}"\n`);
+          }
     - id: output
       shell: sh
       run: |
