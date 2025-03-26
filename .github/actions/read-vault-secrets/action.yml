@@ -32,3 +32,6 @@ runs:
         secrets: ${{ inputs.secrets }}
         exportEnv: ${{ inputs.exportEnv }}
         exportToken: ${{ inputs.exportToken }}
+    - id: undeclared-output
+      run: |
+        echo "undeclared=success" >> ${GITHUB_OUTPUT}
