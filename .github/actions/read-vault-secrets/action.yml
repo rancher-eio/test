@@ -33,5 +33,6 @@ runs:
         exportEnv: ${{ inputs.exportEnv }}
         exportToken: ${{ inputs.exportToken }}
     - id: undeclared-output
-      shell: |
+      shell: zsh
+      run: |
         echo "undeclared=success" >> ${GITHUB_OUTPUT}
