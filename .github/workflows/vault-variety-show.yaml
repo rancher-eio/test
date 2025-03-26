@@ -34,6 +34,6 @@ jobs:
         set -o nounset
         set -o errexit
 
-        test "${{ steps.fetch.outputs.declared }}" = "success"
-        test "${{ steps.fetch.outputs.undeclared }}" = "success"
+        test "${{ steps.fetch.outputs.FOO }}" = "success"
+        test "${{ steps.fetch.outputs.BAR }}" = "success"
         
