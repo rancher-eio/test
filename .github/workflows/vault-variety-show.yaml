@@ -10,7 +10,7 @@ on:
     - .github/workflows/vault-variety-show.yaml
 
 jobs:
-  default:
+  fetch:
     permissions:
       contents: read
       id-token: write
@@ -26,14 +26,24 @@ jobs:
       run: test -z "${FOO}" && test -z "${BAR}"
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
-    - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is CONSUMED
-      continue-on-error: true
-      run: |
-        printf "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" | wc -c
-        test "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" = "CONSUMED"
     - name: secrets are available as outputs
       run: |
         true \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
-        
+    outputs:
+      secrets: ${{ steps.fetch.outputs.secrets }}
+  next:
+    runs-on: ubuntu-24.04
+    steps:
+    - name: ENV does not contain secrets
+      run: test -z "${FOO}" && test -z "${BAR}"
+    - name: VAULT_TOKEN is empty
+      run: test -z "${VAULT_TOKEN}"
+    - name: secrets are available as outputs
+      run: |
+        true \
+        && test "${{ fromJSON(needs.fetch.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(needs.fetch.outputs.secrets).BAR }}" = "success"
+    - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is empty
+      run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
