@@ -26,8 +26,8 @@ jobs:
       run: test -z "${FOO}" && test -z "${BAR}"
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
-    - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is DISCARDED
-      run: test $(echo "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" | tr -d [[:space:]]) = "DISCARDED"
+    - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is CONSUMED
+      run: echo "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" | grep -q CONSUMED
     - name: secrets are available as outputs
       run: |
         true \
