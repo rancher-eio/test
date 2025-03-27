@@ -27,7 +27,7 @@ jobs:
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
     - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is DISCARDED
-      run: test "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" = "DISCARDED"
+      run: test "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" = "DISCARDED\r"
     - name: secrets are available as outputs
       run: |
         true \
