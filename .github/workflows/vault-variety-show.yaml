@@ -34,9 +34,6 @@ jobs:
     - name: secrets are available as outputs
       run: |
         true \
-        && test "${{ steps.fetch.outputs.declared }}" = "value" \
-        && test "${{ steps.fetch.outputs.undeclared }}" = "value" \
-        && test "${{ steps.fetch.outputs.json }}" = "json" \
-        && test "${{ fromJSON(steps.fetch.outputs.json).FOO }}" = "success" \
-        && test "${{ fromJSON(steps.fetch.outputs.json).BAR }}" = "success"
+        && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
         
