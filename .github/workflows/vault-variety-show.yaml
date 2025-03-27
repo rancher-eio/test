@@ -35,6 +35,8 @@ jobs:
       secrets: ${{ steps.fetch.outputs.secrets }}
   next:
     runs-on: ubuntu-24.04
+    needs:
+    - fetch
     steps:
     - name: ENV does not contain secrets
       run: test -z "${FOO}" && test -z "${BAR}"
