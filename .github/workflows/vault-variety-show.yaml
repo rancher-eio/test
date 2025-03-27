@@ -27,7 +27,9 @@ jobs:
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
     - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is CONSUMED
-      run: echo "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" | grep -q CONSUMED
+      run: |
+        printf "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" | wc -c
+        test "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}" = "CONSUMED"
     - name: secrets are available as outputs
       run: |
         true \
