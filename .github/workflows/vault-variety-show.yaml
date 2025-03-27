@@ -36,7 +36,7 @@ jobs:
         true \
         && test "${{ steps.fetch.outputs.declared }}" = "value" \
         && test "${{ steps.fetch.outputs.undeclared }}" = "value" \
-        && test "${{ steps.fetch.outputs }}" = "json" \
+        && test "${{ toJSON(steps.fetch.outputs) }}" = "json" \
         && test "${{ steps.fetch.outputs.FOO }}" = "success" \
         && test "${{ steps.fetch.outputs.BAR }}" = "success"
         
