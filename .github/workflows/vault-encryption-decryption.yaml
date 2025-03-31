@@ -19,7 +19,7 @@ jobs:
       encrypted_secrets: ${{ steps.fetch.outputs.secrets }}
     steps:
     - id: fetch
-      uses: ./actions/encrypt-decrypt/encryption-read-vault-secrets
+      uses: ./actions/encrypt-vault-secrets
       with:
         secrets: |
           secret/data/github-actions/test status | FOO ;
@@ -47,7 +47,7 @@ jobs:
       run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
     - name: Decrypt secrets
       id: secrets
-      uses: ./.github/actions/decrypt-vault-secrets
+      uses: ./actions/decrypt-vault-secrets
       with:
         encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
         
