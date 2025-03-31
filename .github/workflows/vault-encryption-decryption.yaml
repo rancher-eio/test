@@ -8,7 +8,7 @@ on:
     paths:
     - .github/actions/read-vault-secrets/action.yml
     - .github/workflows/vault-variety-show.yaml
-
+  workflow_dispatch:
 jobs:
   fetch:
     permissions:
