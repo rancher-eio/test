@@ -1,0 +1,64 @@
+---
+name: Vault Encrypting and Decrypting
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/actions/read-vault-secrets/action.yml
+    - .github/workflows/vault-variety-show.yaml
+
+jobs:
+  fetch:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-24.04
+    outputs:
+      encrypted_secrets: ${{ steps.fetch.outputs.secrets }}
+    steps:
+    - id: fetch
+      uses: ./actions/encrypt-decrypt/encryption-read-vault-secrets
+      with:
+        secrets: |
+          secret/data/github-actions/test status | FOO ;
+          secret/data/github-actions/test status | BAR
+    - name: ENV does not contain secrets
+      run: test -z "${FOO}" && test -z "${BAR}"
+    - name: VAULT_TOKEN is empty
+      run: test -z "${VAULT_TOKEN}"
+    - name: secrets are available as outputs (before encryption)
+      run: |
+        true \
+        && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
+        
+  next:
+    runs-on: ubuntu-24.04
+    needs:
+    - fetch
+    steps:
+    - name: ENV does not contain secrets
+      run: test -z "${FOO}" && test -z "${BAR}"
+    - name: VAULT_TOKEN is empty
+      run: test -z "${VAULT_TOKEN}"
+    - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is empty
+      run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+    - name: Decrypt secrets
+      id: secrets
+      uses: ./.github/actions/decrypt-vault-secrets  # Path relative to root
+      with:
+        encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
+        
+    - name: Decrypt secrets
+      id: secrets
+      uses: ./.github/actions/decrypt-vault-secrets
+      with:
+        encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
+        
+    - name: Decrypted secrets are available as outputs
+      run: |
+        true \
+        && test "${{ fromJSON(steps.secrets.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(steps.secrets.outputs.secrets).BAR }}" = "success"
