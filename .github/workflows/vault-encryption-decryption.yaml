@@ -47,12 +47,6 @@ jobs:
       run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
     - name: Decrypt secrets
       id: secrets
-      uses: ./.github/actions/decrypt-vault-secrets  # Path relative to root
-      with:
-        encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
-        
-    - name: Decrypt secrets
-      id: secrets
       uses: ./.github/actions/decrypt-vault-secrets
       with:
         encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
