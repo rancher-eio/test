@@ -28,6 +28,12 @@ jobs:
       run: test -z "${FOO}" && test -z "${BAR}"
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
+    - name: Debug outputs
+      run: |
+        echo "Output length: ${#OUTPUT}"
+        echo "First 10 chars: ${OUTPUT:0:10}..."
+      env:
+        OUTPUT: ${{ steps.fetch.outputs.secrets }}
     - name: secrets are available as outputs
       run: |
         true \
