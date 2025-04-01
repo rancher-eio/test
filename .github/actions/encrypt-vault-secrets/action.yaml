@@ -11,9 +11,9 @@ inputs:
     required: false
     default: secret/data/github-actions/test status
 outputs:
-  declared:
-    description: "a declared output"
-    value: ${{ steps.output.outputs.declared }}
+  secrets:
+    description: "the secrets fetched from the vault server"
+    value: ${{ steps.output.outputs.secrets }}
 runs:
   using: composite
   steps:
@@ -34,11 +34,7 @@ runs:
       with:
         script: |
           const crypto = require('crypto');
-          
           core.exportVariable("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "CONSUMED");
-          core.setOutput("declared", "success");
-          core.setOutput("undeclared", "success");
-          
           const secretsObj = ${{ toJSON(steps.vault.outputs) }};
           try {
             const encKey = process.env.MANUALLY_CREATED_ENCRYPTION_KEY;
@@ -56,9 +52,8 @@ runs:
             console.log(`Encrypted output length: ${encryptedOutput.length}`);
             console.log(`First 20 chars: ${encryptedOutput.substring(0, 20)}...`);
 
-
             core.setOutput('secrets', encryptedOutput);
-            console.log('Secrets encrypted for secure passing between jobs');
+            console.log('Secrets encrypted successfully');
           } catch (error) {
             core.setFailed(`Encryption failed: ${error.message}`);
           }
@@ -71,18 +66,9 @@ runs:
       shell: bash
       run: |
         echo "Verifying outputs were set correctly..."
-        SECRETS_OUTPUT="${{ steps.output.outputs.secrets }}"
-        if [ -z "$SECRETS_OUTPUT" ]; then
-          echo "ERROR: 'secrets' output was not set correctly!"
-          exit 1
+        if [ -n "${{ steps.output.outputs.secrets }}" ]; then
+          echo "✅ 'secrets' output set successfully"
         else
-          echo "✅ 'secrets' output exists (length: ${#SECRETS_OUTPUT})"
+          echo "❌ ERROR: 'secrets' output was not set!"
+          exit 1
         fi
-        FOO_OUTPUT="${{ steps.output.outputs.FOO }}"
-        if [ -z "$FOO_OUTPUT" ]; then
-          echo "ERROR: 'FOO' output was not set correctly!"
-          exit 1
-        else
-          echo "✅ 'FOO' output exists"
-        fi 
-        echo "All outputs verified successfully!"
