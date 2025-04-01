@@ -39,9 +39,9 @@ runs:
           const secretsObj = ${{ toJSON(steps.vault.outputs) }};
           
           try {
-            const encKey = process.env.MANUALLY_CREATED_ENCRYPTION_KEY;
+            const encKey = process.env.CI_ENCRYPTION_KEY;
             if (!encKey) {
-              throw new Error('MANUALLY_CREATED_ENCRYPTION_KEY secret is required to encrypt secrets');
+              throw new Error('CI_ENCRYPTION_KEY secret is required to encrypt secrets');
             }
             const secretsJson = JSON.stringify(secretsObj);
             const iv = crypto.randomBytes(16);
