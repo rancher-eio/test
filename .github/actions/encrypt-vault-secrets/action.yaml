@@ -34,7 +34,7 @@ runs:
       id: output
       with:
         script: |
-          /*const crypto = require('crypto');
+          const crypto = require('crypto');
           core.exportVariable("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "CONSUMED");
           const secretsObj = ${{ toJSON(steps.vault.outputs) }};
           
@@ -54,20 +54,22 @@ runs:
             console.log(`Encrypted output length: ${encryptedOutput.length}`);
             console.log(`First 20 chars: ${encryptedOutput.substring(0, 20)}...`);
 
-            core.setOutput('secrets', encryptedOutput);
+            core.setOutput("secrets", encryptedOutput);
+            
             console.log('Secrets encrypted successfully');
+            
           } catch (error) {
             core.setFailed(`Encryption failed: ${error.message}`);
           }
 
           for (const [key, value] of Object.entries(secretsObj)) {
             core.setOutput(key, value);
-          }*/
+          }
           
-          core.setOutput("secrets", ${{ toJSON(steps.vault.outputs) }});
+          /*core.setOutput("secrets", ${{ toJSON(steps.vault.outputs) }});
           for (const [key, value] of Object.entries(${{ toJSON(steps.vault.outputs) }})) {
             core.setOutput(key, value);
-          }
+          }*/
     
     - name: Verify outputs were set
       shell: bash
