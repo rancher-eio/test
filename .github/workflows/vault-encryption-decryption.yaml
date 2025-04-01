@@ -18,6 +18,7 @@ jobs:
     outputs:
       encrypted_secrets: ${{ steps.fetch.outputs.secrets }}
     steps:
+    - uses: actions/checkout@v3
     - id: fetch
       uses: ./.github/actions/encrypt-vault-secrets
       with:
@@ -39,6 +40,7 @@ jobs:
     needs:
     - fetch
     steps:
+    - uses: actions/checkout@v3
     - name: ENV does not contain secrets
       run: test -z "${FOO}" && test -z "${BAR}"
     - name: VAULT_TOKEN is empty
