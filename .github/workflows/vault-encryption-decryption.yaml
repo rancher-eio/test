@@ -1,6 +1,4 @@
----
 name: Vault Encrypting and Decrypting
-
 on:
   push:
     branches:
@@ -9,6 +7,7 @@ on:
     - .github/actions/read-vault-secrets/action.yml
     - .github/workflows/vault-variety-show.yaml
   workflow_dispatch:
+
 jobs:
   fetch:
     permissions:
@@ -19,6 +18,7 @@ jobs:
       encrypted_secrets: ${{ steps.fetch.outputs.secrets }}
     steps:
     - uses: actions/checkout@v3
+    
     - id: fetch
       uses: ./.github/actions/encrypt-vault-secrets
       env:
@@ -27,37 +27,44 @@ jobs:
         secrets: |
           secret/data/github-actions/test status | FOO ;
           secret/data/github-actions/test status | BAR
+    
     - name: ENV does not contain secrets
       run: test -z "${FOO}" && test -z "${BAR}"
+    
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
+    
     - name: secrets are available as outputs (before encryption)
       run: |
         true \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
-        
+  
   next:
     runs-on: ubuntu-24.04
     needs:
     - fetch
     steps:
     - uses: actions/checkout@v3
+    
     - name: ENV does not contain secrets
       run: test -z "${FOO}" && test -z "${BAR}"
+    
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
+    
     - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is empty
       run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
+    
     - name: Decrypt secrets
       id: secrets
       uses: ./.github/actions/decrypt-vault-secrets
-      with:
-        encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
-        
-    - name: Decrypted secrets are available as outputs
       env:
         MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
+      with:
+        encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
+    
+    - name: Decrypted secrets are available as outputs
       run: |
         true \
         && test "${{ fromJSON(steps.secrets.outputs.secrets).FOO }}" = "success" \
