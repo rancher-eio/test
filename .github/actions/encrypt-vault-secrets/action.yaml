@@ -33,9 +33,9 @@ runs:
       uses: actions/github-script@v7
       with:
         script: |
-          const crypto = require('crypto');
-          core.exportVariable("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "CONSUMED");
-          const secretsObj = ${{ toJSON(steps.vault.outputs) }};
+          #const crypto = require('crypto');
+          #core.exportVariable("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "CONSUMED");
+          #const secretsObj = ${{ toJSON(steps.vault.outputs) }};
           
           # try {
           #   const encKey = process.env.MANUALLY_CREATED_ENCRYPTION_KEY;
