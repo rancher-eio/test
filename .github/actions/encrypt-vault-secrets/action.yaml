@@ -69,13 +69,13 @@ runs:
             core.setOutput(key, value);
           }
     
-    # - name: Verify outputs were set
-    #   shell: bash
-    #   run: |
-    #     echo "Verifying outputs were set correctly..."
-    #     if [ -n "${{ steps.output.outputs.secrets }}" ]; then
-    #       echo "✅ 'secrets' output set successfully"
-    #     else
-    #       echo "❌ ERROR: 'secrets' output was not set!"
-    #       exit 1
-    #     fi
+    - name: Verify outputs were set
+      shell: bash
+      run: |
+        echo "Verifying outputs were set correctly..."
+        if [ -n "${{ steps.output.outputs.secrets }}" ]; then
+          echo "✅ 'secrets' output set successfully"
+        else
+          echo "❌ ERROR: 'secrets' output was not set!"
+          exit 1
+        fi
