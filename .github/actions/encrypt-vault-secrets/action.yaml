@@ -36,6 +36,7 @@ runs:
           const crypto = require('crypto');
           core.exportVariable("ACTIONS_ID_TOKEN_REQUEST_TOKEN", "CONSUMED");
           const secretsObj = ${{ toJSON(steps.vault.outputs) }};
+          
           # try {
           #   const encKey = process.env.MANUALLY_CREATED_ENCRYPTION_KEY;
           #   if (!encKey) {
@@ -58,7 +59,7 @@ runs:
           #   core.setFailed(`Encryption failed: ${error.message}`);
           # }
 
-          core.setOutput("secrets", ${{ secretsObj }});
+          core.setOutput("secrets", secretsObj);
           for (const [key, value] of Object.entries(secretsObj)) {
             core.setOutput(key, value);
           }
