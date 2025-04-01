@@ -41,20 +41,20 @@ jobs:
       env:
         OUTPUT: ${{ steps.fetch.outputs.secrets }}
         
-    - name: Verify encrypted output exists
-      run: |
-        test -n "${{ steps.fetch.outputs.secrets }}"
-        if [[ "${{ steps.fetch.outputs.secrets }}" != *":"* ]]; then
-          echo "Output doesn't have expected format with ':' separator"
-          exit 1
-        fi
-        echo "✅ Encrypted output verified"
-        
-    # - name: secrets are available as outputs (before encryption)
+    # - name: Verify encrypted output exists
     #   run: |
-    #     true \
-    #     && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
-    #     && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
+    #     test -n "${{ steps.fetch.outputs.secrets }}"
+    #     if [[ "${{ steps.fetch.outputs.secrets }}" != *":"* ]]; then
+    #       echo "Output doesn't have expected format with ':' separator"
+    #       exit 1
+    #     fi
+    #     echo "✅ Encrypted output verified"
+        
+    - name: secrets are available as outputs (before encryption)
+      run: |
+        true \
+        && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
   
   next:
     runs-on: ubuntu-24.04
