@@ -64,8 +64,15 @@ jobs:
       run: test -z "${VAULT_TOKEN}"
     - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is empty
       run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
-    # - name: secrets are available as outputs
-    #   run: |
-    #     true \
-    #     && test "${{ fromJSON(needs.fetch.outputs.secrets).FOO }}" = "success" \
-    #     && test "${{ fromJSON(needs.fetch.outputs.secrets).BAR }}" = "success"
+    - name: Decrypt secrets
+      id: secrets
+      uses: ./.github/actions/decrypt-vault-secrets
+      env:
+        MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
+      with:
+        encrypted_secrets: ${{ needs.fetch.outputs.secrets }}
+    - name: Decrypted secrets are available as outputs
+      run: |
+        true \
+        && test "${{ fromJSON(steps.secrets.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(steps.secrets.outputs.secrets).BAR }}" = "success"
