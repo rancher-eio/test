@@ -29,8 +29,9 @@ runs:
         exportEnv: false
         exportToken: false
         outputToken: false
-    - name: GitHub Script
+    - name: Configure Outputs
       uses: actions/github-script@v7
+      id: output
       with:
         script: |
           /*const crypto = require('crypto');
