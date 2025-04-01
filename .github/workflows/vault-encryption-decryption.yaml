@@ -22,7 +22,7 @@ jobs:
     - id: fetch
       uses:  ./.github/actions/encrypt-vault-secrets
       env:
-        MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
+        CI_ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
       with:
         secrets: |
           secret/data/github-actions/test status | FOO ;
@@ -30,14 +30,7 @@ jobs:
     - name: ENV does not contain secrets
       run: test -z "${FOO}" && test -z "${BAR}"
     - name: VAULT_TOKEN is empty
-      run: test -z "${VAULT_TOKEN}"
-    - name: Debug outputs
-      run: |
-        echo "Output length: ${#OUTPUT}"
-        echo "First 10 chars: ${OUTPUT:0:10}..."
-      env:
-        OUTPUT: ${{ steps.fetch.outputs.secrets }}
-          
+      run: test -z "${VAULT_TOKEN}"      
     - name: Verify encrypted output exists
       run: |
         test -n "${{ steps.fetch.outputs.secrets }}"
@@ -46,12 +39,7 @@ jobs:
           exit 1
         fi
         echo "✅ Encrypted output verified"
-    
-    # - name: secrets are available as outputs
-    #   run: |
-    #     true \
-    #     && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
-    #     && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
+
   next:
     runs-on: ubuntu-24.04
     needs:
@@ -68,7 +56,7 @@ jobs:
       id: secrets
       uses: ./.github/actions/decrypt-vault-secrets
       env:
-        MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
+        CI_ENCRYPTION_KEY: ${{ secrets.CI_ENCRYPTION_KEY }}
       with:
         encrypted_secrets: ${{ needs.fetch.outputs.secrets }}
     - name: Decrypted secrets are available as outputs
