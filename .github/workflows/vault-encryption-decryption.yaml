@@ -4,8 +4,9 @@ on:
     branches:
     - main
     paths:
-    - .github/actions/read-vault-secrets/action.yml
-    - .github/workflows/vault-variety-show.yaml
+    - .github/actions/decrypt-vault-secrets/action.yml
+    - .github/actions/encrypt-vault-secrets/action.yml
+    - .github/workflows/vault-encryption-decryption.yaml
   workflow_dispatch:
 
 jobs:
@@ -17,11 +18,8 @@ jobs:
     outputs:
       secrets: ${{ steps.fetch.outputs.secrets }}
     steps:
-    - uses: actions/checkout@v3
     - id: fetch
-      uses:  ./.github/actions/encrypt-vault-secrets
-      env:
-        MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
+      uses: rancher-eio/read-vault-secrets@unstable
       with:
         secrets: |
           secret/data/github-actions/test status | FOO ;
@@ -30,54 +28,24 @@ jobs:
       run: test -z "${FOO}" && test -z "${BAR}"
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
-    - name: Debug outputs
-      run: |
-        echo "Output length: ${#OUTPUT}"
-        echo "First 10 chars: ${OUTPUT:0:10}..."
-      env:
-        OUTPUT: ${{ steps.fetch.outputs.secrets }}
-        
-    # - name: Verify encrypted output exists
-    #   run: |
-    #     test -n "${{ steps.fetch.outputs.secrets }}"
-    #     if [[ "${{ steps.fetch.outputs.secrets }}" != *":"* ]]; then
-    #       echo "Output doesn't have expected format with ':' separator"
-    #       exit 1
-    #     fi
-    #     echo "✅ Encrypted output verified"
-        
     - name: secrets are available as outputs
       run: |
         true \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
-  
   next:
     runs-on: ubuntu-24.04
     needs:
     - fetch
     steps:
-    - uses: actions/checkout@v3
-    
     - name: ENV does not contain secrets
       run: test -z "${FOO}" && test -z "${BAR}"
-    
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
-    
     - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is empty
       run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
-    
-    - name: Decrypt secrets
-      id: secrets
-      uses: ./.github/actions/decrypt-vault-secrets
-      env:
-        MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
-      with:
-        encrypted_secrets: ${{ needs.fetch.outputs.secrets }}
-    
-    - name: Decrypted secrets are available as outputs
-      run: |
-        true \
-        && test "${{ fromJSON(steps.secrets.outputs.secrets).FOO }}" = "success" \
-        && test "${{ fromJSON(steps.secrets.outputs.secrets).BAR }}" = "success"
+    # - name: secrets are available as outputs
+    #   run: |
+    #     true \
+    #     && test "${{ fromJSON(needs.fetch.outputs.secrets).FOO }}" = "success" \
+    #     && test "${{ fromJSON(needs.fetch.outputs.secrets).BAR }}" = "success"
