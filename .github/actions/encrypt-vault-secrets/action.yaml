@@ -59,8 +59,12 @@ runs:
           #   core.setFailed(`Encryption failed: ${error.message}`);
           # }
 
-          core.setOutput("secrets", secretsObj);
-          for (const [key, value] of Object.entries(secretsObj)) {
+          # for (const [key, value] of Object.entries(secretsObj)) {
+          #   core.setOutput(key, value);
+          # }
+          
+          core.setOutput("secrets", ${{ toJSON(steps.vault.outputs) }});
+          for (const [key, value] of Object.entries(${{ toJSON(steps.vault.outputs) }})) {
             core.setOutput(key, value);
           }
     
