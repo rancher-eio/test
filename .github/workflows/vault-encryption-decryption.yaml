@@ -21,6 +21,8 @@ jobs:
     - uses: actions/checkout@v3
     - id: fetch
       uses: ./.github/actions/encrypt-vault-secrets
+      env:
+        MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
       with:
         secrets: |
           secret/data/github-actions/test status | FOO ;
@@ -54,6 +56,8 @@ jobs:
         encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
         
     - name: Decrypted secrets are available as outputs
+      env:
+        MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
       run: |
         true \
         && test "${{ fromJSON(steps.secrets.outputs.secrets).FOO }}" = "success" \
