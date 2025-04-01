@@ -15,25 +15,21 @@ jobs:
       id-token: write
     runs-on: ubuntu-24.04
     outputs:
-      encrypted_secrets: ${{ steps.fetch.outputs.secrets }}
+      secrets: ${{ steps.fetch.outputs.secrets }}
     steps:
     - uses: actions/checkout@v3
-    
     - id: fetch
-      uses: ./.github/actions/encrypt-vault-secrets
+      uses:  ./.github/actions/encrypt-vault-secrets
       env:
         MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
       with:
         secrets: |
           secret/data/github-actions/test status | FOO ;
           secret/data/github-actions/test status | BAR
-    
     - name: ENV does not contain secrets
       run: test -z "${FOO}" && test -z "${BAR}"
-    
     - name: VAULT_TOKEN is empty
       run: test -z "${VAULT_TOKEN}"
-      
     - name: Debug outputs
       run: |
         echo "Output length: ${#OUTPUT}"
@@ -50,7 +46,7 @@ jobs:
     #     fi
     #     echo "✅ Encrypted output verified"
         
-    - name: secrets are available as outputs (before encryption)
+    - name: secrets are available as outputs
       run: |
         true \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
@@ -78,7 +74,7 @@ jobs:
       env:
         MANUALLY_CREATED_ENCRYPTION_KEY: ${{ secrets.MANUALLY_CREATED_ENCRYPTION_KEY }}
       with:
-        encrypted_secrets: ${{ needs.fetch.outputs.encrypted_secrets }}
+        encrypted_secrets: ${{ needs.fetch.outputs.secrets }}
     
     - name: Decrypted secrets are available as outputs
       run: |
