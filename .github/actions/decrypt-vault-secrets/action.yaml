@@ -19,9 +19,9 @@ runs:
         script: |
           const crypto = require('crypto');
           try {
-            const encKey = process.env.MANUALLY_CREATED_ENCRYPTION_KEY;
+            const encKey = process.env.CI_ENCRYPTION_KEY;
             if (!encKey) {
-              throw new Error('MANUALLY_CREATED_ENCRYPTION_KEY secret is required for decryption');
+              throw new Error('CI_ENCRYPTION_KEY secret is required for decryption');
             }
             const encrypted = '${{ inputs.encrypted_secrets }}';
             const [ivHex, encryptedData] = encrypted.split(':');
