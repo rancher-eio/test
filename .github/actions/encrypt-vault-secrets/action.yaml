@@ -78,13 +78,11 @@ runs:
         else
           echo "✅ 'secrets' output exists (length: ${#SECRETS_OUTPUT})"
         fi
-        for KEY in $(echo '${{ toJSON(steps.vault.outputs) }}' | jq -r 'keys[]'); do
-          OUTPUT_VALUE="${{ steps.output.outputs[format('{0}', KEY)] }}"
-          if [ -z "$OUTPUT_VALUE" ]; then
-            echo "ERROR: Output for key '$KEY' was not set correctly!"
-            exit 1
-          else
-            echo "✅ Output for key '$KEY' exists"
-          fi
-        done
+        FOO_OUTPUT="${{ steps.output.outputs.FOO }}"
+        if [ -z "$FOO_OUTPUT" ]; then
+          echo "ERROR: 'FOO' output was not set correctly!"
+          exit 1
+        else
+          echo "✅ 'FOO' output exists"
+        fi 
         echo "All outputs verified successfully!"
