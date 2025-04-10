@@ -44,8 +44,8 @@ jobs:
       run: test -z "${VAULT_TOKEN}"
     - name: ACTIONS_ID_TOKEN_REQUEST_TOKEN is empty
       run: test -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN}"
-    # - name: secrets are available as outputs
-    #   run: |
-    #     true \
-    #     && test "${{ fromJSON(needs.fetch.outputs.secrets).FOO }}" = "success" \
-    #     && test "${{ fromJSON(needs.fetch.outputs.secrets).BAR }}" = "success"
+    - name: secrets are available as outputs
+      run: |
+        true \
+        && test "${{ fromJSON(needs.fetch.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(needs.fetch.outputs.secrets).BAR }}" = "success"
