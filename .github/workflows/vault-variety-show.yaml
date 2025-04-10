@@ -21,6 +21,7 @@ jobs:
     - id: fetch
       uses: rancher-eio/read-vault-secrets@unstable
       with:
+        maskSecrets: "false"
         secrets: |
           secret/data/github-actions/test status | FOO ;
           secret/data/github-actions/test status | BAR
