@@ -47,5 +47,10 @@ jobs:
     - name: secrets are available as outputs
       run: |
         true \
+        && test "${{ needs.fetch.outputs.FOO }}" = "success" \
+        && test "${{ needs.fetch.outputs.BAR }}" = "success"
+    - name: secrets are available as JSON outputs
+      run: |
+        true \
         && test "${{ fromJSON(needs.fetch.outputs.secrets).FOO }}" = "success" \
         && test "${{ fromJSON(needs.fetch.outputs.secrets).BAR }}" = "success"
