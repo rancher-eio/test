@@ -35,11 +35,6 @@ jobs:
         true \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).FOO }}" = "success" \
         && test "${{ fromJSON(steps.fetch.outputs.secrets).BAR }}" = "success"
-    - name: secrets are available as outputs
-      run: |
-        true \
-        && test "${{ steps.fetch.outputs.FOO }}" = "success" \
-        && test "${{ steps.fetch.outputs.BAR }}" = "success"
   next:
     runs-on: ubuntu-24.04
     needs:
@@ -56,8 +51,3 @@ jobs:
         true \
         && test "${{ fromJSON(needs.fetch.outputs.secrets).FOO }}" = "success" \
         && test "${{ fromJSON(needs.fetch.outputs.secrets).BAR }}" = "success"
-    - name: secrets are available as outputs
-      run: |
-        true \
-        && test "${{ needs.fetch.outputs.FOO }}" = "success" \
-        && test "${{ needs.fetch.outputs.BAR }}" = "success"
