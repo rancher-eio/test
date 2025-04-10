@@ -34,4 +34,4 @@ jobs:
       - name: Terminate tunnel
         if: always()
         run: |
-          kill ${{ env.TUNNEL_TUNNEL_PID }} || true
+          kill ${{ env.TUNNEL_PID }} || true
