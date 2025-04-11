@@ -1,4 +1,4 @@
-name: Vault VPN Tunnel
+name: PodInfo VPN Tunnel
 on:
   push:
     branches:
