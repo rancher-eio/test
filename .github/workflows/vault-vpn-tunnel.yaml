@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  access-services:
+  access-podinfo:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -22,10 +22,9 @@ jobs:
       
       - name: Access podinfo via cloudflared tunnel
         run: |
-            curl -v https://podinfo.rancher.io/api/info \
+          curl -v https://podinfo.rancher.io/api/info \
             -H "CF-Access-Client-Id: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}" \
-            -H "CF-Access-Client-Secret: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}
-
+            -H "CF-Access-Client-Secret: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}"
             
             # CLOUDFLARE_ACCESS_CLIENT_ID="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}" \
             # CLOUDFLARE_ACCESS_CLIENT_SECRET="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}" \
