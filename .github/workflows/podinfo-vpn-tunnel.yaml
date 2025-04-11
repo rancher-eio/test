@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/vault-vpn-tunnel.yaml
+      - .github/workflows/podinfo-vpn-tunnel.yaml
   workflow_dispatch:
 
 jobs:
