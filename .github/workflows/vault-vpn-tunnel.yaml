@@ -23,7 +23,7 @@ jobs:
         run: |
           export CLOUDFLARE_ACCESS_CLIENT_ID="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}"
           export CLOUDFLARE_ACCESS_CLIENT_SECRET="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}"
-          cloudflared access http --hostname podinfo.rancher.io --url http://localhost:9898 --listener 127.0.0.1:8000 &
+          cloudflared access --hostname podinfo.rancher.io --url http://localhost:9898 --listener 127.0.0.1:8000 &
           echo "TUNNEL_PID=$!" >> $GITHUB_ENV
           sleep 5  
           ps aux | grep cloudflared
