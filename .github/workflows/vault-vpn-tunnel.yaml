@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  access-services:
+  access-podinfo:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -19,17 +19,18 @@ jobs:
           chmod +x cloudflared
           sudo mv cloudflared /usr/local/bin/
       
-      - name: Establish secure connection through Cloudflare
+      - name: Make secure connection through Cloudflare
         run: |
           export CLOUDFLARE_ACCESS_CLIENT_ID="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}"
           export CLOUDFLARE_ACCESS_CLIENT_SECRET="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}"
-          cloudflared access tcp --hostname podinfo.rancher.io --url localhost:9898 &
+          cloudflared access http --hostname podinfo.rancher.io --url http://localhost:9898 --listener 127.0.0.1:8000 &
           echo "TUNNEL_PID=$!" >> $GITHUB_ENV
           sleep 5  
+          ps aux | grep cloudflared
       
-      - name: Access service via secure tunnel
+      - name: Access podinfo via secure tunnel
         run: |
-          curl http://localhost:9898/api/info
+           curl -v http://127.0.0.1:8000/api/info
           
       - name: Terminate tunnel
         if: always()
