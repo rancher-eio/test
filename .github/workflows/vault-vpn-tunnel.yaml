@@ -20,6 +20,8 @@ jobs:
           sudo mv cloudflared /usr/local/bin/
           cloudflared --version
       
-      - name: Access service with direct cloudflared request
+      - name: Access podinfo via cloudflared tunnel
         run: |
-          cloudflared access curl --service-token-id "${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}" --service-token-secret "${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}" https://podinfo.rancher.io/api/info
+          cloudflared access curl https://podinfo.rancher.io/api/info \
+            --service-token-id "${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}" \
+            --service-token-secret "${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}"
