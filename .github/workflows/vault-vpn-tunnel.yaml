@@ -2,13 +2,13 @@ name: Vault VPN Tunnel
 on:
   push:
     branches:
-    - main
+      - main
     paths:
-    - .github/workflows/vault-vpn-tunnel.yaml
+      - .github/workflows/vault-vpn-tunnel.yaml
   workflow_dispatch:
 
 jobs:
-  access-podinfo:
+  access-services:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -18,21 +18,8 @@ jobs:
           curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared
           chmod +x cloudflared
           sudo mv cloudflared /usr/local/bin/
+          cloudflared --version
       
-      - name: Make secure connection through Cloudflare
+      - name: Access service with direct cloudflared request
         run: |
-          export CLOUDFLARE_ACCESS_CLIENT_ID="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}"
-          export CLOUDFLARE_ACCESS_CLIENT_SECRET="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}"
-          cloudflared access --hostname podinfo.rancher.io --url http://localhost:9898 --listener 127.0.0.1:8000 &
-          echo "TUNNEL_PID=$!" >> $GITHUB_ENV
-          sleep 5  
-          ps aux | grep cloudflared
-      
-      - name: Access podinfo via secure tunnel
-        run: |
-           curl -v http://127.0.0.1:8000/api/info
-          
-      - name: Terminate tunnel
-        if: always()
-        run: |
-          kill ${{ env.TUNNEL_PID }} || true
+          cloudflared access curl --service-token-id "${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}" --service-token-secret "${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}" https://podinfo.rancher.io/api/info
