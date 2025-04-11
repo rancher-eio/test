@@ -22,6 +22,6 @@ jobs:
       
       - name: Access podinfo via cloudflared tunnel
         run: |
-          cloudflared access curl https://podinfo.rancher.io/api/info \
-            --service-token-id "${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}" \
-            --service-token-secret "${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}"
+            CLOUDFLARE_ACCESS_CLIENT_ID="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}" \
+            CLOUDFLARE_ACCESS_CLIENT_SECRET="${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}" \
+            cloudflared access curl https://podinfo.rancher.io/api/info
