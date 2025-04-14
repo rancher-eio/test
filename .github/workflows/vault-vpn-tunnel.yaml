@@ -1,4 +1,4 @@
-name: Vault Secrets Access Restriction Through Cloudflare Tunnel 
+name: Cloudflare-Protected Vault Access
 on:
   push:
     branches:
