@@ -16,7 +16,7 @@ jobs:
     
     - name: Read Secrets from Vault
       id: vault-secrets
-      uses: rancher-eio/read-vault-secrets@main
+      uses: rancher-eio/read-vault-secrets@isolation
       with:
         secrets: |
           secret/data/github-actions/test status | FOO ;
