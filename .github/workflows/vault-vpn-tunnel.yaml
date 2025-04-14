@@ -23,13 +23,14 @@ jobs:
         secrets: |
           secret/data/github-actions/test status | FOO ;
           secret/data/github-actions/test status | BAR
-        
-    - name: Debug Available Outputs
-      run: |
-        echo "Available vault outputs:"
-        echo '${{ toJSON(steps.vault-secrets.outputs) }}' | jq
 
     - name: Verify Secrets are Available
       run: |
         test "${{ fromJSON(steps.vault-secrets.outputs.secrets).FOO }}" = "success" \
         && test "${{ fromJSON(steps.vault-secrets.outputs.secrets).BAR }}" = "success"
+
+    - name: ENV does not contain secrets
+      run: test -z "${FOO}" && test -z "${BAR}"
+      
+    - name: VAULT_TOKEN is empty
+      run: test -z "${VAULT_TOKEN}"
