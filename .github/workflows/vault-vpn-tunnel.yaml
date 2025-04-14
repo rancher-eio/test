@@ -1,0 +1,35 @@
+name: Vault Secrets Access Restriction Through Cloudflare Tunnel 
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/vault-vpn-tunnel.yaml
+  workflow_dispatch:
+jobs:
+  access-vault:
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Read Secrets from Vault
+      id: vault-secrets
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          secret/data/github-actions/test status | FOO ;
+          secret/data/github-actions/test status | BAR
+        cloudflare_access_client_id: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}
+        cloudflare_access_client_secret: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}
+        
+    - name: Debug Available Outputs
+      run: |
+        echo "Available vault outputs:"
+        echo '${{ toJSON(steps.vault-secrets.outputs) }}' | jq
+
+    - name: Verify Secrets are Available
+      run: |
+        test "${{ steps.vault-secrets.outputs.FOO }}" = "success" \
+        && test "${{ steps.vault-secrets.outputs.BAR }}" = "success"
