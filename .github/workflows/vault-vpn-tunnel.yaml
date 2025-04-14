@@ -18,11 +18,11 @@ jobs:
       id: vault-secrets
       uses: rancher-eio/read-vault-secrets@isolation
       with:
+        cloudflare_access_client_id: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}
+        cloudflare_access_client_secret: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}
         secrets: |
           secret/data/github-actions/test status | FOO ;
           secret/data/github-actions/test status | BAR
-        cloudflare_access_client_id: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}
-        cloudflare_access_client_secret: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}
         
     - name: Debug Available Outputs
       run: |
@@ -31,5 +31,5 @@ jobs:
 
     - name: Verify Secrets are Available
       run: |
-        test "${{ steps.vault-secrets.outputs.FOO }}" = "success" \
-        && test "${{ steps.vault-secrets.outputs.BAR }}" = "success"
+        test "${{ fromJSON(steps.vault-secrets.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(steps.vault-secrets.outputs.secrets).BAR }}" = "success"
