@@ -16,11 +16,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-      - name: Setup Tailscale
-        uses: tailscale/github-action@v2
-        with:
-          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
-          hostname: github-runner-${{ github.run_id }}
+      - name: Setup Tailscale manually
+        run: |
+          curl -fsSL https://tailscale.com/install.sh | sudo sh
+          sudo tailscale up \
+            --login-server=https://headscale.rancher.kitchen \
+            --authkey=${{ secrets.TAILSCALE_AUTHKEY }} \
+            --hostname=github-runner-${{ github.run_id }} \
+            --accept-routes \
+            --accept-dns
+          echo "Tailscale connection status:"
+          tailscale status
+          echo "Tailscale IP routes:"
+          ip route | grep tailscale
       
       - name: Wait for Tailscale connection
         run: |
