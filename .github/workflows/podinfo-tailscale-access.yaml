@@ -28,7 +28,7 @@ jobs:
           echo "Tailscale connection status:"
           tailscale status
           echo "Tailscale IP routes:"
-          ip route | grep tailscale
+          ip route
       
       - name: Wait for Tailscale connection
         run: |
