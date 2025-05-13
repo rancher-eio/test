@@ -1,0 +1,59 @@
+name: PodInfo Tailscale Access
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/podinfo-tailscale-access.yaml
+  workflow_dispatch:
+
+jobs:
+  access-podinfo:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+          hostname: github-runner-${{ github.run_id }}
+      
+      - name: Wait for Tailscale connection
+        run: |
+          echo "Waiting for Tailscale to connect..."
+          sleep 10
+          tailscale status
+      
+      - name: Access podinfo via IP directly
+        run: |
+          echo "Accessing podinfo using direct IP..."
+          RESPONSE=$(curl -s http://10.100.70.134:9898/api/info)
+          
+          echo "Response from podinfo service:"
+          echo "$RESPONSE" | jq .
+        
+          if echo "$RESPONSE" | jq -e '.hostname' > /dev/null; then
+            echo "✅ Successfully accessed podinfo service via IP!"
+          else
+            echo "❌ Failed to get valid response from podinfo via IP"
+            exit 1
+          fi
+          
+      - name: Access podinfo via DNS name
+        run: |
+          echo "Accessing podinfo using DNS name..."
+          RESPONSE=$(curl -s http://backend-podinfo.ts.rancher.kitchen:9898/api/info)
+          
+          echo "Response from podinfo service:"
+          echo "$RESPONSE" | jq .
+        
+          if echo "$RESPONSE" | jq -e '.hostname' > /dev/null; then
+            echo "✅ Successfully accessed podinfo service via DNS name!"
+          else
+            echo "❌ Failed to get valid response from podinfo via DNS name"
+            exit 1
+          fi
