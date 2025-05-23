@@ -1,4 +1,4 @@
-name: PodInfo Tailscale Access
+name: PodInfo VPN Tunnel Access with Tailscale
 
 on:
   push:
