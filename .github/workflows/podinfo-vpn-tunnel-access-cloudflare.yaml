@@ -1,4 +1,4 @@
-name: PodInfo VPN Tunnel
+name: PodInfo VPN Tunnel Cloudflare
 on:
   push:
     branches:
