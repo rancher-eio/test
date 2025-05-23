@@ -1,0 +1,108 @@
+name: PodInfo VPN Tunnel Access with Tailscale 2
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/podinfo-vpn-tunnel-access-tailscale-2.yaml
+  workflow_dispatch:
+
+jobs:
+  access-podinfo:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Tailscale
+        run: |
+          curl -fsSL https://tailscale.com/install.sh | sudo sh
+          echo 'net.ipv4.ip_forward = 1' | sudo tee -a /etc/sysctl.conf
+          echo 'net.ipv6.conf.all.forwarding = 1' | sudo tee -a /etc/sysctl.conf
+          sudo sysctl -p /etc/sysctl.conf
+
+          sudo systemctl start tailscaled
+          sleep 2
+          if ! sudo systemctl is-active --quiet tailscaled; then
+            echo "❌ tailscaled is not running!"
+            sudo systemctl status tailscaled
+            exit 1
+          fi
+          echo "✅ tailscaled is running"
+          
+          echo "Attempting to connect to Headscale..."
+          sudo tailscale up \
+            --login-server=https://headscale.rancher.kitchen \
+            --authkey=${{ secrets.TAILSCALE_AUTHKEY }} \
+            --hostname=github-runner-${{ github.run_id }} \
+            --accept-routes \
+            --accept-dns
+            --timeout=60s || {
+              echo "❌ Failed to connect to Headscale"
+              echo "Tailscale logs:"
+              sudo journalctl -u tailscaled -n 50 --no-pager
+              exit 1
+            }
+          echo "Tailscale connection status:"
+          tailscale status
+          echo "Tailscale IP routes:"
+          ip route
+      
+      - name: Wait for Tailscale connection
+        run: |
+          echo "Waiting for Tailscale to connect..."
+          sleep 10
+          echo "=== Tailscale Status ==="
+          tailscale status || {
+            echo "❌ Failed to get Tailscale status"
+            echo "Tailscale logs:"
+            sudo journalctl -u tailscaled -n 50 --no-pager
+            exit 1
+          }
+          echo -e "\n=== Network Routes ==="
+          ip route | grep -E "(tailscale|100.64|10.100)" || echo "No Tailscale routes found"
+          
+          echo -e "\n=== DNS Configuration ==="
+          cat /etc/resolv.conf | grep -E "(nameserver|search)" || true
+
+      - name: Test network connectivity
+        run: |
+          echo "Testing DNS resolution for backend-podinfo.ts.rancher.kitchen..."
+          nslookup backend-podinfo.ts.rancher.kitchen || {
+            echo "DNS resolution failed, trying with dig..."
+            dig backend-podinfo.ts.rancher.kitchen || echo "DNS resolution not working"
+          }
+          echo -e "\nTesting connectivity to 10.100.70.134..."
+          ping -c 3 -W 2 10.100.70.134 || echo "Ping failed"
+          
+      - name: Access podinfo via IP directly
+        run: |
+          echo "Accessing podinfo using direct IP..."
+          RESPONSE=$(curl -s http://10.100.70.134:9898/api/info)
+          
+          echo "Response from podinfo service:"
+          echo "$RESPONSE" | jq .
+        
+          if echo "$RESPONSE" | jq -e '.hostname' > /dev/null; then
+            echo "✅ Successfully accessed podinfo service via IP!"
+          else
+            echo "❌ Failed to get valid response from podinfo via IP"
+            exit 1
+          fi
+          
+      - name: Access podinfo via DNS name
+        run: |
+          echo "Accessing podinfo using DNS name..."
+          RESPONSE=$(curl -s http://backend-podinfo.ts.rancher.kitchen:9898/api/info)
+          
+          echo "Response from podinfo service:"
+          echo "$RESPONSE" | jq .
+        
+          if echo "$RESPONSE" | jq -e '.hostname' > /dev/null; then
+            echo "✅ Successfully accessed podinfo service via DNS name!"
+          else
+            echo "❌ Failed to get valid response from podinfo via DNS name"
+            exit 1
+          fi
