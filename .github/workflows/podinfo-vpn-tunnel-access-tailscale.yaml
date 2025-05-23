@@ -20,7 +20,7 @@ jobs:
         run: |
           curl -fsSL https://tailscale.com/install.sh | sudo sh
           sudo tailscale up \
-            --login-server=https://headscale.rancher.kitchen \
+            --login-server=https://headscale-test.rancher.kitchen \
             --authkey=${{ secrets.TAILSCALE_AUTHKEY }} \
             --hostname=github-runner-${{ github.run_id }} \
             --accept-routes \
