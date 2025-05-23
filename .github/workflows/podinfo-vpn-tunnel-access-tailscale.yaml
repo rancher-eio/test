@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - .github/workflows/podinfo-tailscale-access.yaml
+      - .github/workflows/podinfo-vpn-tunnel-access-tailscale.yaml
   workflow_dispatch:
 
 jobs:
