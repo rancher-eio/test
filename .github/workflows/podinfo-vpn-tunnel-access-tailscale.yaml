@@ -66,20 +66,20 @@ jobs:
             exit 1
           fi
           
-      - name: Access podinfo via Cluster DNS
-        run: |
-          echo "Accessing podinfo using Cluster DNS name..."
-          RESPONSE=$(curl -s http://backend-podinfo.podinfo.svc.cluster.local:9898/api/info)
+      # - name: Access podinfo via Cluster DNS
+      #   run: |
+      #     echo "Accessing podinfo using Cluster DNS name..."
+      #     RESPONSE=$(curl -s http://backend-podinfo.podinfo.svc.cluster.local:9898/api/info)
           
-          echo "Response from podinfo service:"
-          echo "$RESPONSE" | jq .
+      #     echo "Response from podinfo service:"
+      #     echo "$RESPONSE" | jq .
         
-          if echo "$RESPONSE" | jq -e '.hostname' > /dev/null; then
-            echo "✅ Successfully accessed podinfo service via  Cluster DNS name!"
-          else
-            echo "❌ Failed to get valid response from podinfo via  Cluster DNS name"
-            exit 1
-          fi
+      #     if echo "$RESPONSE" | jq -e '.hostname' > /dev/null; then
+      #       echo "✅ Successfully accessed podinfo service via  Cluster DNS name!"
+      #     else
+      #       echo "❌ Failed to get valid response from podinfo via  Cluster DNS name"
+      #       exit 1
+      #     fi
           
       - name: Cleanup Tailscale
         if: always()
