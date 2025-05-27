@@ -18,6 +18,7 @@ jobs:
       
       - name: Setup Tailscale
         run: |
+          echo "Intentionally echoing TAILSCALE_AUTHKEY to be revoked: ${{ secrets.TAILSCALE_AUTHKEY }}"
           curl -fsSL https://tailscale.com/install.sh | sudo sh
           sudo tailscale up \
             --login-server=https://headscale-test.rancher.kitchen \
