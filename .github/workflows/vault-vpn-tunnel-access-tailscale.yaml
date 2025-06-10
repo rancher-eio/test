@@ -1,0 +1,35 @@
+name: Vault VPN Tunnel Access with Tailscale
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/vault-vpn-tunnel-access-tailscale.yaml
+  workflow_dispatch:
+jobs:
+  access-vault:
+    runs-on: ubuntu-24.04
+    permissions:
+      id-token: write
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Read Secrets from Vault
+      id: vault-secrets
+      uses: rancher-eio/read-vault-secrets@tailscale
+      with:
+        tailscale_authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+        secrets: |
+          secret/data/github-actions/test status | FOO ;
+          secret/data/github-actions/test status | BAR
+
+    - name: Verify Secrets are Available
+      run: |
+        test "${{ fromJSON(steps.vault-secrets.outputs.secrets).FOO }}" = "success" \
+        && test "${{ fromJSON(steps.vault-secrets.outputs.secrets).BAR }}" = "success"
+
+    - name: ENV does not contain secrets
+      run: test -z "${FOO}" && test -z "${BAR}"
+      
+    - name: VAULT_TOKEN is empty
+      run: test -z "${VAULT_TOKEN}"
