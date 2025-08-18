@@ -20,10 +20,11 @@ jobs:
     - id: fetch
       uses: rancher-eio/read-vault-secrets@main
       with:
+        address: https://vault.rancher.kitchen
         secrets: |
-          github/token/rancher-eio--test-issue-GH--issues--write issuesWrite
+          github/token/rancher-eio--test-issue-GH--issues--write data.token
     - name: open test issue
       env:
-        GH_TOKEN: "${{ fromJSON(steps.fetch.outputs.secrets).issuesWrite.data.token }}"
+        GH_TOKEN: "${{ fromJSON(steps.fetch.outputs.secrets).token }}"
       run: |
         gh issue create --title ":robot: Test Issue from ${{ github.event.repository.name }}" --body ":sparkles: :gift: :sparkles:"
