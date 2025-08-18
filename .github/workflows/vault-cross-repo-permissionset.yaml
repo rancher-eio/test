@@ -22,9 +22,7 @@ jobs:
       with:
         address: https://vault.rancher.kitchen
         secrets: |
-          github/token/rancher-eio--test-issue-GH--issues--write token
+          github/token/rancher-eio--test-issue-GH--issues--write token | GH_TOKEN
     - name: open test issue
-      env:
-        GH_TOKEN: "${{ steps.fetch.outputs.token }}"
       run: |
         gh issue create --title ":robot: Test Issue from ${{ github.event.repository.name }}" --body ":sparkles: :gift: :sparkles:"
