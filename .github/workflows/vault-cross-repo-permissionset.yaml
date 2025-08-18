@@ -25,4 +25,4 @@ jobs:
           github/token/rancher-eio--test-issue-GH--issues--write token | GH_TOKEN
     - name: open test issue
       run: |
-        gh issue create --title ":robot: Test Issue from ${{ github.event.repository.name }}" --body ":sparkles: :gift: :sparkles:"
+        gh issue create --repo rancher-eio/test-issue-GH --title ":robot: Test Issue from ${{ github.event.repository.name }}" --body ":sparkles: :gift: :sparkles:"
