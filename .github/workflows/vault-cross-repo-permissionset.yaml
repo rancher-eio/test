@@ -22,7 +22,7 @@ jobs:
       with:
         address: https://vault.rancher.kitchen
         secrets: |
-          github/token/rancher-eio--test-issue-GH--issues--write data.token
+          github/token/rancher-eio--test-issue-GH--issues--write token
     - name: open test issue
       env:
         GH_TOKEN: "${{ fromJSON(steps.fetch.outputs.secrets).token }}"
