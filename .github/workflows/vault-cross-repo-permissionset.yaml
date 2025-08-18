@@ -1,0 +1,29 @@
+---
+name: Vault Cross-Repo PermissionSet
+
+on:
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/vault-cross-repo-permissionset.yaml
+
+jobs:
+  fetch:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-24.04
+    steps:
+    - id: checkout
+      uses: actions/checkout@v4
+    - id: fetch
+      uses: rancher-eio/read-vault-secrets@main
+      with:
+        secrets: |
+          github/token/rancher-eio--test-issue-GH--issues--write issuesWrite
+    - name: open test issue
+      env:
+        GH_TOKEN: "${{ fromJSON(steps.fetch.outputs.secrets).issuesWrite.data.token }}"
+      run: |
+        gh issue create --title ":robot: Test Issue from ${{ github.event.repository.name }}" --body ":sparkles: :gift: :sparkles:"
