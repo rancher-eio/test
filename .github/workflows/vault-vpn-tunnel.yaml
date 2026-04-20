@@ -16,7 +16,7 @@ jobs:
     
     - name: Read Secrets from Vault
       id: vault-secrets
-      uses: rancher-eio/read-vault-secrets@0da85151ad1f19ed7986c41587e45aac1ace74b6 # v3
+      uses: rancher-eio/read-vault-secrets@isolation
       with:
         cloudflare_access_client_id: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_ID }}
         cloudflare_access_client_secret: ${{ secrets.CLOUDFLARE_ACCESS_CLIENT_SECRET }}
