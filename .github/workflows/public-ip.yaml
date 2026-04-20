@@ -25,7 +25,7 @@ jobs:
     steps:
     - name: Get Public IP
       id: ip
-      uses: haythem/public-ip@v1.3
+      uses: haythem/public-ip@bdddd92c198b0955f0b494a8ebeac529754262ff # v1.3
 
     - name: Print Public IP
       run: |

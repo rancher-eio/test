@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
     - id: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
     - id: fetch
-      uses: rancher-eio/read-vault-secrets@main
+      uses: rancher-eio/read-vault-secrets@0da85151ad1f19ed7986c41587e45aac1ace74b6 # v3
       with:
         address: https://vault.rancher.kitchen
         secrets: |
