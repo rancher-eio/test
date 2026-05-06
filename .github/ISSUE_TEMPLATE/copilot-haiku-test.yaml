@@ -1,7 +1,7 @@
 name: "🧪 Copilot Haiku Test"
 description: "Test issue to verify Copilot picks up custom instructions and writes a haiku."
 labels: ["copilot-test"]
-assignee: ["copilot"]
+assignees: ["copilot"]
 body:
   - type: markdown
     attributes:
