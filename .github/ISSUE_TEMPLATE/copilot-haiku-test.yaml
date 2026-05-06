@@ -1,16 +1,19 @@
 name: "🧪 Copilot Haiku Test"
 description: "Test issue to verify Copilot picks up custom instructions and writes a haiku."
 labels: ["copilot-test"]
-assignees:
-  - copilot-swe-agent
+assignee: ["copilot"]
 body:
   - type: markdown
     attributes:
       value: |
         ## Copilot Haiku Test
-        This issue exists to test that the Copilot coding agent picks up our
-        custom `.instructions.md` file and follows it. When assigned, Copilot
-        should comment with a haiku — nothing else.
+
+        **Agent Instructions:** Follow the guidelines in `.github/instructions/haiku-test.instructions.md`.
+
+        This issue exists to test that the Copilot cloud agent picks up our
+        custom instructions file and follows it. When assigned, Copilot
+        should comment on this issue with a haiku — nothing else.
+        Do not modify any files or write any code.
 
   - type: input
     id: topic
