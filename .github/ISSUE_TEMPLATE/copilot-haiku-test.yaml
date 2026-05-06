@@ -1,7 +1,8 @@
 name: "🧪 Copilot Haiku Test"
 description: "Test issue to verify Copilot picks up custom instructions and writes a haiku."
 labels: ["copilot-test"]
-assignees: ["copilot"]
+assignees:
+  - copilot-swe-agent
 body:
   - type: markdown
     attributes:
