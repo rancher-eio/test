@@ -1,0 +1,31 @@
+name: "🧪 Copilot Haiku Test"
+description: "Test issue to verify Copilot picks up custom instructions and writes a haiku."
+labels: ["copilot-test"]
+assignees:
+  - copilot-swe-agent
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Copilot Haiku Test
+        This issue exists to test that the Copilot coding agent picks up our
+        custom `.instructions.md` file and follows it. When assigned, Copilot
+        should comment with a haiku — nothing else.
+
+  - type: input
+    id: topic
+    attributes:
+      label: Haiku Topic
+      description: "Give Copilot a topic for the haiku."
+      placeholder: "e.g. Kubernetes pods crashing at 3am"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Extra Context (optional)
+      description: "Any additional flavor text for the haiku."
+      placeholder: "The on-call engineer weeps softly..."
+    validations:
+      required: false
