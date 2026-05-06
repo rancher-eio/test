@@ -1,14 +1,11 @@
 # Repository Copilot Instructions
 
-This repository uses custom Copilot instructions for testing.
+## Issue Type Routing
 
-## When assigned to an issue
-
-- Check the issue labels and template type.
-- If the issue has the `copilot-test` label, follow the instructions in `.github/instructions/haiku-test.instructions.md`.
-- Do NOT create pull requests for `copilot-test` issues. Comment only.
+- If the issue has the `copilot-test` label or was created from the "Copilot Haiku Test" template, follow the instructions in `.github/instructions/haiku-test.instructions.md`.
+- When working on `copilot-test` issues, your ONLY action is to comment on the issue with a haiku. Do not modify any files. Do not write code. The pull request you open should contain zero changes.
 
 ## General
 
-- Use the cheapest/fastest model available.
-- Keep actions minimal — do not over-engineer.
+- Always check for instruction files in `.github/instructions/` that match the issue type before taking any action.
+- Read the full issue body for any file references or special instructions.
