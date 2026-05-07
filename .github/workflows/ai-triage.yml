@@ -1,0 +1,62 @@
+name: AI Issue Triage
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  # Required to post the comment on the issue
+  issues: write
+  # Required to access the GitHub Models API without an external key
+  models: read 
+  # Required to check out your repository to read the .md file
+  contents: read 
+
+jobs:
+  triage:
+    # Only run if the issue has the specific label
+    if: contains(github.event.issue.labels.*.name, 'copilot-test')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Generate AI Response
+        id: generate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: |
+          # 1. Read your custom instructions
+          INSTRUCTIONS=$(cat .github/instructions/haiku-test.md)
+          
+          # 2. Build the JSON payload using jq
+          # We use gpt-4o here, but you can swap this for any model in the GitHub registry
+          PAYLOAD=$(jq -n \
+            --arg sys "$INSTRUCTIONS" \
+            --arg user "Title: $ISSUE_TITLE\n\nBody: $ISSUE_BODY" \
+            '{
+              model: "gpt-4o",
+              messages: [
+                {role: "system", content: $sys},
+                {role: "user", content: $user}
+              ]
+            }')
+
+          # 3. Call the GitHub Models OpenAI-compatible endpoint
+          RESPONSE=$(curl -s -X POST "https://models.inference.ai.azure.com/chat/completions" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD")
+
+          # 4. Extract the AI's reply and save it to a temporary text file
+          echo "$RESPONSE" | jq -r '.choices[0].message.content' > ai_comment.txt
+
+      - name: Post Comment to Issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_URL: ${{ github.event.issue.html_url }}
+        run: |
+          # Use the GitHub CLI to post the contents of the text file
+          gh issue comment $ISSUE_URL -F ai_comment.txt
