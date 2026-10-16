@@ -1,0 +1,12 @@
+name: appco-mirror-test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: org-${{ github.repository_owner_id }}-amd64-k8s
+    container: 258353268611.dkr.ecr.us-west-2.amazonaws.com/appco/go:1.25
+    steps:
+    - run: go version
+    - run: go env GOOS GOARCH
