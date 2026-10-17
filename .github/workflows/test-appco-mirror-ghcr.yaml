@@ -1,7 +1,7 @@
 name: Test AppCo Mirroring for GHCR
 
 on:
-  workflow_run: {}
+  workflow_dispatch: {}
 
 jobs:
   check-go:
