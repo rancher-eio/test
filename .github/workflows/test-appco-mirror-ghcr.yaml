@@ -1,0 +1,22 @@
+name: Test AppCo Mirroring for GHCR
+
+on:
+  workflow_run: {}
+
+jobs:
+  check-go:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      packages: read
+
+    container:
+      image: ghcr.io/rancher-eio/appco-mirror/containers/go/1.25.9
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Print Go Version
+        run: go version
