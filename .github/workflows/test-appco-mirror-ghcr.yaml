@@ -12,7 +12,7 @@ jobs:
       packages: read
 
     container:
-      image: "ghcr.io/rancher-eio/appco-mirror/containers/go:1.25.9"
+      image: "ghcr.io/rancher-eio/appco-mirror/containers/go:1.27.2"
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
